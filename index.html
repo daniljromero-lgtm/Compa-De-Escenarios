@@ -400,7 +400,7 @@
   <section class="screen" id="screen-add-song">
     <div class="scroll-area">
       <form class="peña-form" onsubmit="handleFormSubmit(event)">
-        <h2 class="brand-title" style="font-size:1.5rem; text-align:center;">Nueva canción</h2>
+        <h2 class="brand-title" id="song-form-title" style="font-size:1.5rem;text-align:center;">Nueva canción</h2>
         
         <div class="peña-group">
           <label class="peña-label">Título *</label>
@@ -434,7 +434,7 @@
           <textarea id="form-lyrics" class="peña-textarea" placeholder="[Am] Cuando salí de Santiago [E7] todo el camino lloré..."></textarea>
         </div>
 
-        <button type="submit" class="peña-submit-btn">Guardar canción</button>
+        <button type="submit" id="song-submit-btn" class="peña-submit-btn">Guardar canción</button>
       </form>
     </div>
   </section>
@@ -853,7 +853,16 @@
     return;
   }
   
-  showToast("Modo edición (próximo paso)");
+  document.getElementById("form-title").value = editingSongData.title;
+  document.getElementById("form-genre").value = editingSongData.genre;
+  document.getElementById("form-key").value = editingSongData.key;
+  document.getElementById("form-bpm").value = editingSongData.bpm;
+  document.getElementById("form-lyrics").value = editingSongData.lyrics;
+  
+  document.getElementById("song-form-title").innerText = "Editar canción";
+  document.getElementById("song-submit-btn").innerText = "Guardar cambios";
+  
+  navigateTo("screen-add-song");
 }
   
   function showToast(msg) {
