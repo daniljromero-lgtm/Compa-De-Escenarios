@@ -805,5 +805,12 @@
     setTimeout(() => { toast.style.display = 'none'; }, 2500);
   }
 </script>
+
+<script>
+if ("serviceWorker" in navigator){
+  navigator.serviceWorker.register("service-worker.js");
+}
+</script>
+  
 </body>
 </html>
