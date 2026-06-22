@@ -315,6 +315,26 @@
 
   .empty-peña { text-align: center; padding: 40px 20px; color: var(--text-muted); font-size: 0.9rem; }
   .toast-peña { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: var(--btn-bordo); color: white; padding: 10px 20px; border-radius: 30px; font-size: 0.85rem; z-index: 500; display: none; }
+  
+/* --- OPTIMIZACIÓN PARA PANTALLAS GRANDES (TABLETS) --- */
+@media (min-width: 900px) {
+  .main-menu-container {
+    padding: 60px;
+  }
+  .brand-title {
+    font-size: 3rem;
+  }
+  .menu-card {
+    max-width: 700px;
+    padding: 30px;
+  }
+  .song-row {
+    padding: 22px;
+  }
+  .lyrics-render-box {
+    font-size: 1.6rem;
+  }
+}
 </style>
 </head>
 <body>
