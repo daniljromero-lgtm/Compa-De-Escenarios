@@ -502,6 +502,10 @@
   let currentGenreFilter = 'chacarera';
   let showSetlistIds = [];
   let screenHistory = ['screen-main-menu'];
+
+  // ===== MODO EDICIÓN =====
+  let editingSongId = null;
+  let editingSongData = null;
   
   // Control de Vivo
   let currentLiveIndex = 0;
@@ -618,12 +622,34 @@
             <div class="song-row-title">${song.title}</div>
             <div class="song-row-sub">${song.key} • ${song.bpm} BPM</div>
           </div>
-          <div class="action-icons-wrap">
-            <button class="add-to-show-btn ${isAdded ? 'added' : ''}" onclick="toggleSongInSetlist('${song.id}')">
-              ${isAdded ? '✔ Show' : '+ Show'}
-            </button>
-            <button class="delete-btn" onclick="deleteSong('${song.id}')">🗑</button>
-          </div>
+<div class="action-icons-wrap">
+
+  <button 
+    class="add-to-show-btn ${isAdded ? 'added' : ''}"
+    onclick="toggleSongInSetlist('${song.id}')">
+    
+    ${isAdded ? '✓ Show' : '+ Show'}
+    
+  </button>
+
+  <button 
+    class="delete-btn"
+    style="color:#4da3ff"
+    onclick="editSong('${song.id}')">
+    
+    ✏️
+    
+  </button>
+
+  <button 
+    class="delete-btn"
+    onclick="deleteSong('${song.id}')">
+    
+    🗑️
+    
+  </button>
+
+</div>
         </div>
       `;
     }).join('');
@@ -818,6 +844,18 @@
     document.getElementById('lyrics-render-target').style.fontSize = `${currentFontSize}px`;
   }
 
+  function editSong(id){
+  editingSongId = id;
+  editingSongData = songsArray.find(s => s.id === id);
+  
+  if(!editingSongData){
+    showToast("No se encontró la canción");
+    return;
+  }
+  
+  showToast("Modo edición (próximo paso)");
+}
+  
   function showToast(msg) {
     const toast = document.getElementById('toast-msg');
     if(!toast) return;
