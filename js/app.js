@@ -1,209 +1,351 @@
-// ==========================================================================
-// CONFIGURACIÓN DE FIREBASE Y IMPORTACIONES
-// ==========================================================================
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { 
-    getFirestore, 
-    collection, 
-    addDoc, 
-    onSnapshot, 
-    doc, 
-    deleteDoc, 
-    updateDoc 
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+// Inicializar Cloud Firestore (Usando el objeto expuesto globalmente)
+const db = firebase.firestore();
 
-// Las credenciales se toman del objeto que quedará expuesto de manera segura en el index.html
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const songsCollection = collection(db, "canciones");
+/* ===================== ESTADO DE LA APLICACIÓN ===================== */
+let songsArray = [];
+let currentGenreFilter = 'chacarera';
+let showSetlistIds = [];
+let screenHistory = ['screen-main-menu'];
 
-// ==========================================================================
-// REFERENCIAS A ELEMENTOS DEL DOM (INTERFAZ)
-// ==========================================================================
-const songsListContainer = document.getElementById("songsList");
-const searchInput = document.getElementById("searchInput");
-const songForm = document.getElementById("songForm");
-const formOverlay = document.getElementById("formOverlay");
-const formTitle = document.getElementById("formTitle");
-const btnSubmitForm = document.getElementById("btnSubmitForm");
-const btnCancelForm = document.getElementById("btnCancelForm");
-const btnOpenForm = document.getElementById("btnOpenForm");
+// ===== MODO EDICIÓN =====
+let editingSongId = null;
+let editingSongData = null;
 
-// Variables de estado de la aplicación
-let allSongs = [];
-let editId = null; // Guardará el ID de la canción si estamos editando (v2.2.2+)
+// Control de Vivo
+let currentLiveIndex = 0;
+let isAutoscrolling = false;
+let autoscrollInterval = null;
+let scrollSpeed = 22; 
+let currentFontSize = 20;
+let triggerNextOnNextScroll = false;
 
-// ==========================================================================
-// FUNCIONES DE CONTROL DEL FORMULARIO FLOTANTE (MODAL)
-// ==========================================================================
-function openModal() {
-    formOverlay.style.display = "flex";
+/* ===================== NAVEGACIÓN ===================== */
+window.showScreen = function(screenId) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const activeScreen = document.getElementById(screenId);
+  if(activeScreen) activeScreen.classList.add('active');
+  
+  const backBtn = document.getElementById('global-back-btn');
+  const addBtn = document.getElementById('header-add-btn');
+  const headerTitle = document.getElementById('main-header-title');
+
+  if (screenId === 'screen-main-menu') {
+    backBtn.style.display = 'none';
+    addBtn.style.display = 'none';
+    headerTitle.innerText = "Cancionero";
+  } else {
+    backBtn.style.display = 'block';
+    if (screenId === 'screen-cancionero-list') {
+      addBtn.style.display = 'block';
+      headerTitle.innerText = "Cancionero";
+    } else if (screenId === 'screen-add-song') {
+      addBtn.style.display = 'none';
+      headerTitle.innerText = "Nueva Canción";
+    } else if (screenId === 'screen-shows-repertoire') {
+      addBtn.style.display = 'none';
+      headerTitle.innerText = "Shows en Vivo";
+    }
+  }
 }
 
-function closeModal() {
-    formOverlay.style.display = "none";
-    songForm.reset();
-    resetFormStatus();
+window.navigateTo = function(screenId) {
+  if (screenHistory[screenHistory.length - 1] !== screenId) {
+    screenHistory.push(screenId);
+  }
+  showScreen(screenId);
 }
 
-function resetFormStatus() {
-    editId = null;
-    formTitle.textContent = "Agregar nueva canción";
-    formTitle.classList.remove("edit-mode-header");
-    btnSubmitForm.textContent = "Guardar Canción";
-    btnSubmitForm.classList.remove("btn-edit-save");
+window.navigateBack = function() {
+  if (screenHistory.length > 1) {
+    screenHistory.pop();
+    const prevScreen = screenHistory[screenHistory.length - 1];
+    showScreen(prevScreen);
+  }
 }
 
-// Eventos para abrir/cerrar formulario flotante
-btnOpenForm.addEventListener("click", openModal);
-btnCancelForm.addEventListener("click", closeModal);
+window.openCancioneroView = function() { navigateTo('screen-cancionero-list'); renderSongs(); }
+window.openShowsView = function() { navigateTo('screen-shows-repertoire'); renderShowRepertoire(); }
 
-// Cerrar si se hace clic fuera del recuadro del formulario
-formOverlay.addEventListener("click", (e) => {
-    if (e.target === formOverlay) closeModal();
+/* ===================== CONEXIÓN EN TIEMPO REAL CON CLOUD FIRESTORE ===================== */
+db.collection('Canciones').onSnapshot((snapshot) => {
+  songsArray = [];
+  snapshot.forEach((doc) => {
+    const data = doc.data();
+    songsArray.push({
+      id: doc.id,
+      title: data.titulo || 'Sin título',
+      genre: (data.estilo || 'otros').toLowerCase(),
+      key: data.tonalidad || 'Am', 
+      bpm: data.bpm || 90,
+      lyrics: data.letra || ''
+    });
+  });
+  renderSongs();
+  renderShowRepertoire();
+}, (error) => {
+  console.error("Error cargando Firestore: ", error);
 });
 
-// ==========================================================================
-// ESCUCHA EN TIEMPO REAL (FIRESTORE -> APP)
-// ==========================================================================
-onSnapshot(songsCollection, (snapshot) => {
-    allSongs = [];
-    snapshot.forEach((doc) => {
-        allSongs.push({ id: doc.id, ...doc.data() });
-    });
-    // Ordenar alfabéticamente por título por defecto
-    allSongs.sort((a, b) => a.title.localeCompare(b.title));
-    renderSongs(allSongs);
-});
-
-// ==========================================================================
-// RENDERIZADO / DIBUJADO DE TARJETAS EN PANTALLA
-// ==========================================================================
-function renderSongs(songs) {
-    songsListContainer.innerHTML = "";
-
-    if (songs.length === 0) {
-        songsListContainer.innerHTML = `<p style="text-align:center; color:var(--text-muted);">No se encontraron canciones.</p>`;
-        return;
-    }
-
-    songs.forEach((song) => {
-        const card = document.createElement("div");
-        card.className = "song-card";
-
-        card.innerHTML = `
-            <div class="song-header">
-                <div class="song-title-area">
-                    <div class="song-title">${song.title}</div>
-                    <div class="song-genre">${song.genre}</div>
-                </div>
-            </div>
-            <div class="song-meta">
-                <div class="meta-item"><strong>Tono:</strong> ${song.key || 'N/A'}</div>
-                <div class="meta-item"><strong>BPM:</strong> ${song.bpm || 'N/A'}</div>
-            </div>
-            <pre class="song-lyrics">${song.lyrics}</pre>
-            <div class="song-actions">
-                <button class="btn-action btn-edit" data-id="${song.id}">✏️</button>
-                <button class="btn-action btn-delete" data-id="${song.id}">🗑️</button>
-            </div>
-        `;
-
-        songsListContainer.appendChild(card);
-    });
-
-    // Asignar eventos a los botones de las tarjetas recién creadas
-    document.querySelectorAll(".btn-edit").forEach(btn => {
-        btn.addEventListener("click", () => editSong(btn.dataset.id));
-    });
-
-    document.querySelectorAll(".btn-delete").forEach(btn => {
-        btn.addEventListener("click", () => deleteSong(btn.dataset.id));
-    });
-}
-
-// ==========================================================================
-// FILTRO DE BÚSQUEDA en tiempo real
-// ==========================================================================
-searchInput.addEventListener("input", (e) => {
-    const term = e.target.value.toLowerCase().trim();
-    const filtered = allSongs.filter(song => 
-        song.title.toLowerCase().includes(term) || 
-        song.genre.toLowerCase().includes(term) ||
-        song.lyrics.toLowerCase().includes(term)
-    );
-    renderSongs(filtered);
-});
-
-// ==========================================================================
-// LÓGICA DE NEGOCIO: AGREGAR, EDITAR Y ELIMINAR
-// ==========================================================================
-
-// Función v2.2.2: Cargar datos en el formulario para editar
-function editSong(id) {
-    const song = allSongs.find(s => s.id === id);
-    if (!song) return;
-
-    editId = id; // Guardamos el ID que estamos editando
-
-    // Cambiar textos de la interfaz visualmente para modo edición
-    formTitle.textContent = "Editar canción";
-    formTitle.classList.add("edit-mode-header");
-    btnSubmitForm.textContent = "Guardar cambios";
-    btnSubmitForm.classList.add("btn-edit-save");
-
-    // Precargar datos en los inputs del formulario
-    document.getElementById("songTitle").value = song.title;
-    document.getElementById("songGenre").value = song.genre;
-    document.getElementById("songKey").value = song.key || "";
-    document.getElementById("songBpm").value = song.bpm || "";
-    document.getElementById("songLyrics").value = song.lyrics;
-
-    openModal();
-}
-
-// Función para borrar canción
-async function deleteSong(id) {
-    if (confirm("¿Seguro que querés eliminar esta canción del cancionero?")) {
-        try {
-            await deleteDoc(doc(db, "canciones", id));
-        } catch (error) {
-            console.error("Error al eliminar: ", error);
-            alert("No se pudo eliminar la canción.");
-        }
-    }
-}
-
-// Envío del Formulario (Guardar / Modificar)
-songForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    const updatedData = {
-        title: document.getElementById("songTitle").value.trim(),
-        genre: document.getElementById("songGenre").value,
-        key: document.getElementById("songKey").value.trim(),
-        bpm: document.getElementById("songBpm").value.trim(),
-        lyrics: document.getElementById("songLyrics").value.trim()
-    };
-
-    if (!updatedData.title || !updatedData.lyrics) {
-        alert("Por favor, completá al menos el Título y la Letra.");
-        return;
-    }
-
-    if (editId) {
-        // PENDIENTE v2.2.3: Aquí irá la actualización en vez de duplicar.
-        // Por ahora, para mantener el estado exacto de la v2.2.2, se deja el aviso.
-        alert("Modo edición detectado. En el próximo paso (v2.2.3) activaremos el guardado en Firestore.");
-        closeModal();
+/* ===================== RENDERS INTERFAZ ===================== */
+window.filterByGenre = function(genre) {
+  currentGenreFilter = genre.toLowerCase();
+  document.querySelectorAll('.tab-item').forEach(btn => {
+    if(btn.onclick.toString().includes(`'${genre}'`)) {
+      btn.classList.add('active');
     } else {
-        // Modo Agregar normal
-        try {
-            await addDoc(songsCollection, updatedData);
-            closeModal();
-        } catch (error) {
-            console.error("Error al agregar canción: ", error);
-            alert("Hubo un error al guardar la canción.");
-        }
+      btn.classList.remove('active');
     }
+  });
+  renderSongs();
+}
+
+window.renderSongs = function() {
+  const target = document.getElementById('songs-render-target');
+  if(!target) return;
+  const searchVal = document.getElementById('search-input').value.toLowerCase();
+  
+  const filtered = songsArray.filter(s => {
+    const matchesGenre = s.genre === currentGenreFilter;
+    const matchesSearch = s.title.toLowerCase().includes(searchVal);
+    return matchesGenre && matchesSearch;
+  });
+
+  if (filtered.length === 0) {
+    target.innerHTML = `<div class="empty-peña">🎵 No hay canciones en este género todavía.<br>Tocá el + para agregar una.</div>`;
+    return;
+  }
+
+  target.innerHTML = filtered.map(song => {
+    const isAdded = showSetlistIds.includes(song.id);
+    return `
+      <div class="song-row">
+        <div class="song-avatar" onclick="quickViewSong('${song.id}')">${song.title.charAt(0).toUpperCase()}</div>
+        <div class="song-meta-info" onclick="quickViewSong('${song.id}')">
+          <div class="song-row-title">${song.title}</div>
+          <div class="song-row-sub">${song.key} • ${song.bpm} BPM</div>
+        </div>
+        <div class="action-icons-wrap">
+          <button class="add-to-show-btn ${isAdded ? 'added' : ''}" onclick="toggleSongInSetlist('${song.id}')">
+            ${isAdded ? '✓ Show' : '+ Show'}
+          </button>
+          <button class="delete-btn" style="color:#4da3ff" onclick="editSong('${song.id}')">✏️</button>
+          <button class="delete-btn" onclick="deleteSong('${song.id}')">🗑️</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+window.renderShowRepertoire = function() {
+  const target = document.getElementById('show-repertoire-target');
+  if(!target) return;
+  const selectedSongs = songsArray.filter(s => showSetlistIds.includes(s.id));
+
+  if (selectedSongs.length === 0) {
+    target.innerHTML = `<div class="empty-peña">🎤 No armaste ningún repertorio todavía.<br>Andá al Cancionero y sumá temas al show.</div>`;
+    return;
+  }
+
+  target.innerHTML = selectedSongs.map((song, idx) => `
+    <div class="song-row">
+      <div class="song-avatar" style="background: var(--card-shows);">${idx + 1}</div>
+      <div class="song-meta-info">
+        <div class="song-row-title">${song.title}</div>
+        <div class="song-row-sub">${song.genre.toUpperCase()} • ${song.key}</div>
+      </div>
+      <button class="delete-btn" onclick="toggleSongInSetlist('${song.id}')" style="color:var(--text-dorado)">Quitar</button>
+    </div>
+  `).join('');
+}
+
+window.toggleSongInSetlist = function(id) {
+  const index = showSetlistIds.indexOf(id);
+  if (index > -1) {
+    showSetlistIds.splice(index, 1);
+  } else {
+    showSetlistIds.push(id);
+  }
+  renderSongs();
+  renderShowRepertoire();
+}
+
+window.handleFormSubmit = function(e) {
+  e.preventDefault();
+  
+  const newSong = {
+    titulo: document.getElementById('form-title').value,
+    estilo: document.getElementById('form-genre').value,
+    tonalidad: document.getElementById('form-key').value,
+    bpm: parseInt(document.getElementById('form-bpm').value) || 90,
+    letra: document.getElementById('form-lyrics').value,
+    id_cancion: ""
+  };
+
+  db.collection('Canciones').add(newSong)
+    .then(() => {
+      showToast("¡Canción guardada en Firestore!");
+      e.target.reset();
+      navigateBack();
+    })
+    .catch(err => showToast("Error al guardar: " + err.message));
+}
+
+window.deleteSong = function(id) {
+  if(confirm("¿Seguro que querés borrar esta canción, paisano?")) {
+    db.collection('Canciones').doc(id).delete()
+      .then(() => showToast("Canción eliminada de la nube"));
+  }
+}
+
+/* ===================== MOTOR SHOW EN VIVO ===================== */
+window.startLiveShow = function() {
+  if (showSetlistIds.length === 0) {
+    showToast("Agregá canciones al show primero");
+    return;
+  }
+  currentLiveIndex = 0;
+  document.getElementById('live-player-mode').classList.add('active');
+  loadLiveSong();
+}
+
+window.exitLiveShow = function() {
+  stopAutoscroll();
+  document.getElementById('live-player-mode').classList.remove('active');
+}
+
+window.quickViewSong = function(id) {
+  showSetlistIds = [id];
+  currentLiveIndex = 0;
+  document.getElementById('live-player-mode').classList.add('active');
+  loadLiveSong();
+}
+
+window.loadLiveSong = function() {
+  const selectedSongs = songsArray.filter(s => showSetlistIds.includes(s.id));
+  const song = selectedSongs[currentLiveIndex];
+  if (!song) return;
+
+  document.getElementById('live-meta-title').innerText = song.title;
+  document.getElementById('live-meta-sub').innerText = `${song.genre.toUpperCase()} • Tonalidad: ${song.key} • ${song.bpm} BPM`;
+
+  const processedLyrics = song.lyrics.replace(/\[([^\]]+)\]/g, '<span class="chord">$1</span>');
+  const target = document.getElementById('lyrics-render-target');
+  target.innerHTML = processedLyrics;
+  target.style.fontSize = `${currentFontSize}px`;
+
+  document.getElementById('live-prev-btn').classList.toggle('disabled', currentLiveIndex === 0);
+  document.getElementById('live-next-btn').classList.toggle('disabled', currentLiveIndex === selectedSongs.length - 1);
+
+  triggerNextOnNextScroll = false;
+  resetLiveScroll();
+}
+
+window.changeLiveSong = function(direction) {
+  const selectedSongs = songsArray.filter(s => showSetlistIds.includes(s.id));
+  const nextIndex = currentLiveIndex + direction;
+  if (nextIndex >= 0 && nextIndex < selectedSongs.length) {
+    currentLiveIndex = nextIndex;
+    loadLiveSong();
+  } else if (nextIndex >= selectedSongs.length) {
+    showToast("¡Fin del show!");
+    exitLiveShow();
+  }
+}
+
+window.toggleAutoscroll = function() {
+  if (isAutoscrolling) { stopAutoscroll(); } else { startAutoscroll(); }
+}
+
+window.startAutoscroll = function() {
+  isAutoscrolling = true;
+  document.getElementById('scroll-play-btn').innerText = "Pausa ⏸";
+  document.getElementById('center-play-trigger').innerText = "⏸";
+  
+  const container = document.getElementById('live-scroll-area');
+  autoscrollInterval = setInterval(() => {
+    container.scrollTop += 1;
+    if (container.scrollTop >= (container.scrollHeight - container.clientHeight - 2)) {
+      stopAutoscroll();
+      setTimeout(() => { changeLiveSong(1); }, 800);
+    }
+  }, scrollSpeed);
+}
+
+window.stopAutoscroll = function() {
+  isAutoscrolling = false;
+  document.getElementById('scroll-play-btn').innerText = "Play ▶";
+  document.getElementById('center-play-trigger').innerText = "▶";
+  clearInterval(autoscrollInterval);
+}
+
+window.resetLiveScroll = function() {
+  stopAutoscroll();
+  document.getElementById('live-scroll-area').scrollTop = 0;
+}
+
+document.getElementById('live-scroll-area').addEventListener('scroll', function(e) {
+  const el = e.target;
+  if (el.scrollTop >= (el.scrollHeight - el.clientHeight - 5)) {
+    if (!isAutoscrolling) { 
+      if (!triggerNextOnNextScroll) triggerNextOnNextScroll = true;
+    }
+  }
 });
+
+document.getElementById('live-scroll-area').addEventListener('wheel', function(e) {
+  if (triggerNextOnNextScroll && e.deltaY > 0) {
+    triggerNextOnNextScroll = false;
+    changeLiveSong(1);
+  }
+});
+
+document.getElementById('live-scroll-area').addEventListener('touchend', function(e) {
+  const el = e.currentTarget;
+  if (el.scrollTop >= (el.scrollHeight - el.clientHeight - 5)) {
+    if(triggerNextOnNextScroll) {
+      triggerNextOnNextScroll = false;
+      changeLiveSong(1);
+    } else {
+      triggerNextOnNextScroll = true;
+    }
+  }
+});
+
+window.adjustScrollSpeed = function(delta) {
+  scrollSpeed = Math.max(5, scrollSpeed - (delta * 3));
+  if (isAutoscrolling) { stopAutoscroll(); startAutoscroll(); }
+}
+
+window.adjustFontSize = function(delta) {
+  currentFontSize = Math.max(12, Math.min(36, currentFontSize + delta));
+  document.getElementById('lyrics-render-target').style.fontSize = `${currentFontSize}px`;
+}
+
+window.editSong = function(id){
+  editingSongId = id;
+  editingSongData = songsArray.find(s => s.id === id);
+  
+  if(!editingSongData){
+    showToast("No se encontró la canción");
+    return;
+  }
+  
+  document.getElementById("form-title").value = editingSongData.title;
+  document.getElementById("form-genre").value = editingSongData.genre;
+  document.getElementById("form-key").value = editingSongData.key;
+  document.getElementById("form-bpm").value = editingSongData.bpm;
+  document.getElementById("form-lyrics").value = editingSongData.lyrics;
+  
+  document.getElementById("song-form-title").innerText = "Editar canción";
+  document.getElementById("song-submit-btn").innerText = "Guardar cambios";
+  
+  navigateTo("screen-add-song");
+}
+
+window.showToast = function(msg) {
+  const toast = document.getElementById('toast-msg');
+  if(!toast) return;
+  toast.innerText = msg;
+  toast.style.display = 'block';
+  setTimeout(() => { toast.style.display = 'none'; }, 2500);
+}
