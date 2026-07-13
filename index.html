@@ -1,91 +1,189 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Compa de Escenarios - Cancionero</title>
-    <link rel="stylesheet" href="css/styles.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1e110a">
+<title>Cancionero - Compañero de Escenario</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;800&family=Playfair+Display:ital,wght@0,500;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+<link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
 
-    <div class="container">
-        <header>
-            <h1>Compa de Escenarios</h1>
-        </header>
-
-        <div class="search-container">
-            <input type="text" id="searchInput" placeholder="Buscar por título, género o letra...">
-        </div>
-
-        <div id="songsList" class="songs-list">
-            <p style="text-align: center; color: var(--text-muted);">Cargando canciones peñeras...</p>
-        </div>
+<div id="app">
+  <header class="header">
+    <button class="back-btn" id="global-back-btn" onclick="navigateBack()">←</button>
+    <div class="header-title-container">
+      <span class="header-title" id="main-header-title">Cancionero</span>
     </div>
+    <button class="add-song-icon-btn" id="header-add-btn" onclick="navigateTo('screen-add-song')">+</button>
+  </header>
 
-    <button id="btnOpenForm" class="btn-floating">+</button>
+  <main class="screen active" id="screen-main-menu">
+    <div class="main-menu-container">
+      <div class="brand-box">
+        <span class="brand-guitar">🎸</span>
+        <h1 class="brand-title">Cancionero</h1>
+        <p class="brand-subtitle">Tu compañero en el escenario</p>
+      </div>
 
-    <div id="formOverlay" class="form-overlay">
-        <div class="form-container">
-            <h2 id="formTitle">Agregar nueva canción</h2>
-            <form id="songForm">
-                
-                <div class="form-group">
-                    <label for="songTitle">Título de la canción</label>
-                    <input type="text" id="songTitle" required placeholder="Ej: La Pochi Pacha">
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="songGenre">Género</label>
-                        <select id="songGenre">
-                            <option value="Chacarera">Chacarera</option>
-                            <option value="Zamba">Zamba</option>
-                            <option value="Escondido">Escondido</option>
-                            <option value="Gato">Gato</option>
-                            <option value="Huayno">Huayno</option>
-                            <option value="Chamame">Chamamé</option>
-                            <option value="Otro">Otro/Particular</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="songKey">Tonalidad / Acorde inicial</label>
-                        <input type="text" id="songKey" placeholder="Ej: Mi menor (Em)">
-                    </div>
-                    <div class="form-group">
-                        <label for="songBpm">BPM (Ritmo)</label>
-                        <input type="number" id="songBpm" placeholder="Ej: 120">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="songLyrics">Letra y Acordes</label>
-                    <textarea id="songLyrics" rows="10" required placeholder="Pegá la letra acá..."></textarea>
-                </div>
-
-                <div class="form-buttons">
-                    <button type="button" id="btnCancelForm" class="btn btn-secondary">Cancelar</button>
-                    <button type="submit" id="btnSubmitForm" class="btn btn-primary">Guardar Canción</button>
-                </div>
-
-            </form>
+      <div class="menu-card cancionero-btn" onclick="openCancioneroView()">
+        <span class="menu-card-icon">🪘</span>
+        <div class="menu-card-text">
+          <h2 class="menu-card-title">Cancionero</h2>
+          <p class="menu-card-desc">Todas tus canciones por género</p>
         </div>
+        <span class="menu-card-arrow">&gt;</span>
+      </div>
+
+      <div class="menu-card shows-btn" onclick="openShowsView()">
+        <span class="menu-card-icon">🎤</span>
+        <div class="menu-card-text">
+          <h2 class="menu-card-title">Shows en vivo</h2>
+          <p class="menu-card-desc">Armá el repertorio para tu próximo show</p>
+        </div>
+        <span class="menu-card-arrow">&gt;</span>
+      </div>
+
+      <p class="footer-text">Folklore Argentino 🌿</p>
     </div>
+  </main>
 
-    <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyCDW6qQeYPSBvKXyVil0Y4TFjBETLszJao",
-            authDomain: "cancionerointeractivo.firebaseapp.com",
-            projectId: "cancionerointeractivo",
-            storageBucket: "cancionerointeractivo.firebasestorage.app",
-            messagingSenderId: "522780296914",
-            appId: "1:522780296914:web:0b99e4fa3ec9c780ebcf0b"
-        };
-    </script>
+  <section class="screen" id="screen-cancionero-list">
+    <div class="tabs-wrapper">
+      <div class="tabs-container">
+        <button class="tab-item active" onclick="filterByGenre('chacarera')">🪘 Chacareras</button>
+        <button class="tab-item" onclick="filterByGenre('zamba')">🌸 Zambas</button>
+        <button class="tab-item" onclick="filterByGenre('escondido')">🎭 Escondidos</button>
+        <button class="tab-item" onclick="filterByGenre('gato')">🐱 Gatos</button>
+        <button class="tab-item" onclick="filterByGenre('chamame')">🪗 Chamamés</button>
+        <button class="tab-item" onclick="filterByGenre('otros')">✨ Otros</button>
+      </div>
+    </div>
+    <div class="search-container">
+      <input type="text" class="search-box" id="search-input" placeholder="Buscar canción por título..." oninput="renderSongs()">
+    </div>
+    <div class="scroll-area">
+      <div id="songs-render-target"></div>
+    </div>
+  </section>
 
-    <script type="module" src="js/app.js"></script>
+  <section class="screen" id="screen-add-song">
+    <div class="scroll-area">
+      <form class="peña-form" onsubmit="handleFormSubmit(event)">
+        <h2 class="brand-title" id="song-form-title" style="font-size:1.5rem;text-align:center;">Nueva canción</h2>
+        
+        <div class="peña-group">
+          <label class="peña-label">Título *</label>
+          <input type="text" id="form-title" class="peña-input" required placeholder="Ej: Chacarera del Rancho">
+        </div>
 
+        <div class="peña-group">
+          <label class="peña-label">Estilo / Género *</label>
+          <select id="form-genre" class="peña-select" required>
+            <option value="chacarera">Chacarera</option>
+            <option value="zamba">Zamba</option>
+            <option value="escondido">Escondido</option>
+            <option value="gato">Gato</option>
+            <option value="chamame">Chamame</option>
+            <option value="otros">Otros</option>
+          </select>
+        </div>
+
+        <div class="peña-group">
+          <label class="peña-label">Tonalidad *</label>
+          <input type="text" id="form-key" class="peña-input" required placeholder="Ej: Am, Sol Mayor">
+        </div>
+
+        <div class="peña-group">
+          <label class="peña-label">BPM *</label>
+          <input type="number" id="form-bpm" class="peña-input" required value="90">
+        </div>
+
+        <div class="peña-group">
+          <label class="peña-label">Letra (Escribí los acordes entre corchetes, ej: [Am])</label>
+          <textarea id="form-lyrics" class="peña-textarea" placeholder="[Am] Cuando salí de Santiago [E7] todo el camino lloré..."></textarea>
+        </div>
+
+        <button type="submit" id="song-submit-btn" class="peña-submit-btn">Guardar canción</button>
+      </form>
+    </div>
+  </section>
+
+  <section class="screen" id="screen-shows-repertoire">
+    <div class="scroll-area">
+      <button class="start-show-action-btn" onclick="startLiveShow()">🚀 Iniciar Show en Vivo</button>
+      <h3 class="peña-label" style="margin-bottom: 12px;">Lista de temas seleccionados:</h3>
+      <div id="show-repertoire-target"></div>
+    </div>
+  </section>
+</div>
+
+<div id="live-player-mode">
+  <div class="live-player-header">
+    <button class="live-ctrl-btn" onclick="exitLiveShow()">Salir</button>
+    <div class="live-player-meta">
+      <div class="live-player-title" id="live-meta-title">Título de la Canción</div>
+      <div class="live-player-subtitle" id="live-meta-sub">Género • Tonalidad • BPM</div>
+    </div>
+    <button class="live-ctrl-btn" onclick="resetLiveScroll()">Reiniciar</button>
+  </div>
+
+  <div class="live-player-controls-bar">
+    <span>Letra:</span>
+    <button class="live-ctrl-btn" onclick="adjustFontSize(-2)">A-</button>
+    <button class="live-ctrl-btn" onclick="adjustFontSize(2)">A+</button>
+    <div style="width: 10px;"></div>
+    <span>Scroll:</span>
+    <button class="live-ctrl-btn" id="scroll-play-btn" onclick="toggleAutoscroll()">Play ▶</button>
+    <button class="live-ctrl-btn" onclick="adjustScrollSpeed(-1)">Vel -</button>
+    <button class="live-ctrl-btn" onclick="adjustScrollSpeed(1)">Vel +</button>
+  </div>
+
+  <div class="live-scroll-view" id="live-scroll-area">
+    <pre class="lyrics-render-box" id="lyrics-render-target"></pre>
+  </div>
+
+  <div class="live-footer-nav">
+    <button class="nav-circle-btn" id="live-prev-btn" onclick="changeLiveSong(-1)">⏮</button>
+    <button class="nav-circle-btn" onclick="toggleAutoscroll()" id="center-play-trigger" style="font-size:1.5rem;">▶</button>
+    <button class="nav-circle-btn next-song" id="live-next-btn" onclick="changeLiveSong(1)">⏭</button>
+  </div>
+</div>
+
+<div class="toast-peña" id="toast-msg"></div>
+
+<script>
+  /* ===================== CONFIGURACIÓN REAL DE FIREBASE ===================== */
+  const firebaseConfig = {
+    apiKey: "AIzaSyCDW6qQeYPSBvKXyVil0Y4TFjBETLszJao",
+    authDomain: "cancionerointeractivo.firebaseapp.com",
+    projectId: "cancionerointeractivo",
+    storageBucket: "cancionerointeractivo.firebasestorage.app",
+    messagingSenderId: "522780296914",
+    appId: "1:522780296914:web:0b99e4fa3ec9c780ebcf0b"
+  };
+
+  // Inicializar Firebase globalmente tal cual lo tenías
+  firebase.initializeApp(firebaseConfig);
+</script>
+
+<script src="js/app.js"></script>
+
+<script>
+if ("serviceWorker" in navigator){
+  navigator.serviceWorker.register("service-worker.js");
+}
+</script>
+  
 </body>
 </html>
