@@ -1,300 +1,308 @@
-
-/* ==========================================================================
-   ESTILOS GENERALES Y VARIABLES
-   ========================================================================== */
+/* ===================== PALETA DE COLORES APK ORIGINAL ===================== */
 :root {
-    --bg-color: #121212;
-    --card-bg: #1e1e1e;
-    --text-color: #e0e0e0;
-    --text-muted: #a0a0a0;
-    --primary-color: #ffd700; /* Dorado Peñero */
-    --accent-blue: #2196f3;  /* Azul para edición */
-    --danger-color: #f44336;
-    --border-radius: 8px;
+  --bg-main: #1e110a;       
+  --card-cancionero: #42210b; 
+  --card-shows: #1e112a;      
+  --btn-bordo: #7a221e;      
+  --text-dorado: #e2c285;    
+  --text-blanco: #f4eae1;    
+  --text-muted: #a68b7c;     
+  --chord-color: #64b5f6;    
+  --border-color: rgba(226, 194, 133, 0.15);
+  
+  --font-titulos: 'Cinzel', serif;
+  --font-letras: 'Playfair Display', serif;
+  --font-ui: 'Plus Jakarta Sans', sans-serif;
+  --transition: 0.2s cubic-bezier(.4,0,.2,1);
 }
 
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg-main);
+  color: var(--text-blanco);
+  font-family: var(--font-ui);
+  -webkit-tap-highlight-color: transparent;
 }
 
-body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    line-height: 1.6;
-    padding: 10px;
-    padding-bottom: 80px; /* Espacio para el botón flotante inferior */
+#app {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  position: relative;
 }
 
-/* ==========================================================================
-   ESTRUCTURA Y CONTENEDORES
-   ========================================================================== */
-.container {
-    max-width: 800px;
-    margin: 0 auto;
+/* HEADER */
+.header {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  background: var(--bg-main);
+  min-height: 60px;
+  flex-shrink: 0;
 }
 
-header {
-    text-align: center;
-    padding: 20px 0;
-    border-bottom: 1px solid #333;
-    margin-bottom: 20px;
+.back-btn {
+  background: none;
+  border: none;
+  color: var(--text-blanco);
+  font-size: 1.5rem;
+  cursor: pointer;
+  margin-right: 14px;
+  display: none;
 }
 
-header h1 {
-    color: var(--primary-color);
-    font-size: 1.8rem;
+.header-title-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
 }
 
-/* Buscador */
-.search-container {
-    margin-bottom: 20px;
+.header-title {
+  font-family: var(--font-titulos);
+  font-weight: 700;
+  font-size: 1.3rem;
+  color: var(--text-dorado);
 }
 
-.search-container input {
-    width: 100%;
-    padding: 12px 15px;
-    background-color: var(--card-bg);
-    border: 1px solid #444;
-    border-radius: var(--border-radius);
-    color: var(--text-color);
-    font-size: 1rem;
+.add-song-icon-btn {
+  background: none;
+  border: none;
+  color: var(--text-dorado);
+  font-size: 1.6rem;
+  cursor: pointer;
+  display: none;
 }
 
-.search-container input:focus {
-    outline: none;
-    border-color: var(--primary-color);
+/* CONTENEDOR DE PANTALLAS */
+.screen {
+  display: none;
+  flex: 1;
+  flex-direction: column;
+  overflow: hidden;
+}
+.screen.active { display: flex; }
+
+.scroll-area {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  -webkit-overflow-scrolling: touch;
 }
 
-/* ==========================================================================
-   LISTA DE CANCIONES Y TARJETAS
-   ========================================================================== */
-.songs-list {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+/* PANTALLA 1: MENU PRINCIPAL */
+.main-menu-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 24px;
+  gap: 24px;
+  max-width: 650px;
 }
 
-.song-card {
-    background-color: var(--card-bg);
-    border-radius: var(--border-radius);
-    padding: 15px;
-    border-left: 4px solid var(--primary-color);
-    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+.brand-box {
+  text-align: center;
+  margin-bottom: 20px;
 }
 
-/* Encabezado de la tarjeta */
-.song-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 10px;
+.brand-guitar {
+  font-size: 3.5rem;
+  margin-bottom: 12px;
+  display: block;
 }
 
-.song-title-area {
-    max-width: 70%;
+.brand-title {
+  font-family: var(--font-titulos);
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--text-dorado);
+  letter-spacing: 1px;
 }
 
-.song-title {
-    font-size: 1.3rem;
-    font-weight: bold;
-    color: #fff;
+.brand-subtitle {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin-top: 4px;
 }
 
-.song-genre {
-    font-size: 0.9rem;
-    color: var(--text-muted);
-    font-style: italic;
+.menu-card {
+  width: 100%;
+  max-width: 400px;
+  padding: 24px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  cursor: pointer;
+  border: 1px solid rgba(226, 194, 133, 0.1);
+  transition: transform var(--transition);
+  position: relative;
+}
+.menu-card:active { transform: scale(0.98); }
+
+.menu-card.cancionero-btn { background: var(--card-cancionero); }
+.menu-card.shows-btn { background: var(--card-shows); }
+
+.menu-card-icon { font-size: 2rem; opacity: 0.8; }
+.menu-card-text { flex: 1; }
+
+.menu-card-title {
+  font-family: var(--font-titulos);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-blanco);
 }
 
-/* Metadatos (Tono, BPM) */
-.song-meta {
-    display: flex;
-    gap: 15px;
-    font-size: 0.9rem;
-    margin-bottom: 12px;
-    background-color: rgba(255,255,255,0.05);
-    padding: 5px 10px;
-    border-radius: 4px;
-    width: fit-content;
+.menu-card-desc {
+  font-size: 0.8rem;
+  color: rgba(244, 234, 225, 0.7);
+  margin-top: 2px;
 }
 
-.meta-item strong {
-    color: var(--primary-color);
+.menu-card-arrow { color: var(--text-dorado); font-size: 1.2rem; }
+.footer-text { margin-top: auto; font-size: 0.8rem; color: var(--text-muted); letter-spacing: 1px; padding-bottom: 10px; }
+
+/* PANTALLA 2: PESTAÑAS HORIZONTALES */
+.tabs-wrapper {
+  overflow-x: auto;
+  background: var(--bg-main);
+  border-bottom: 1px solid var(--border-color);
+  flex-shrink: 0;
+}
+.tabs-wrapper::-webkit-scrollbar { display: none; }
+
+.tabs-container {
+  display: flex;
+  padding: 0 8px;
+  min-width: max-content;
 }
 
-/* Letra y acordes */
-.song-lyrics {
-    white-space: pre-wrap;
-    font-family: 'Courier New', Courier, monospace;
-    font-size: 1.05rem;
-    background-color: rgba(0,0,0,0.2);
-    padding: 12px;
-    border-radius: 4px;
-    overflow-x: auto;
-    color: #fff;
+.tab-item {
+  padding: 14px 16px;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-family: var(--font-ui);
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  position: relative;
+  transition: color var(--transition);
 }
 
-/* Botones de acción en la tarjeta */
-.song-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 12px;
-    margin-top: 15px;
-    border-top: 1px solid #333;
-    padding-top: 10px;
+.tab-item.active { color: var(--text-dorado); }
+.tab-item.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 16px; right: 16px;
+  height: 3px;
+  background: var(--text-dorado);
+  border-radius: 4px 4px 0 0;
 }
 
-.btn-action {
-    background: none;
-    border: none;
-    font-size: 1.2rem;
-    cursor: pointer;
-    padding: 5px 10px;
-    border-radius: 4px;
-    transition: background-color 0.2s;
+/* LISTA DE CANCIONES */
+.search-container { padding: 12px 16px; background: rgba(0,0,0,0.15); }
+.search-box {
+  width: 100%;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 12px 16px;
+  color: var(--text-blanco);
+  font-family: var(--font-ui);
+  font-size: 0.95rem;
+  outline: none;
 }
 
-.btn-action:active {
-    background-color: rgba(255,255,255,0.1);
+.song-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 8px;
+  border-bottom: 1px solid rgba(226, 194, 133, 0.08);
+  cursor: pointer;
+}
+.song-row:active { background: rgba(255,255,255,0.02); }
+
+.song-avatar {
+  width: 42px; height: 42px; border-radius: 50%;
+  background: var(--card-cancionero);
+  color: var(--text-dorado);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-titulos); font-weight: 700; font-size: 1.1rem;
+  border: 1px solid rgba(226, 194, 133, 0.2);
 }
 
-/* ==========================================================================
-   FORMULARIO FLOTANTE (MODAL COMPORTAMIENTO)
-   ========================================================================== */
-.form-overlay {
-    display: none; /* Se controla por JS */
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0,0,0,0.8);
-    z-index: 1000;
-    justify-content: center;
-    align-items: center;
-    padding: 15px;
+.song-meta-info { flex: 1; min-width: 0; }
+.song-row-title { font-weight: 600; font-size: 1rem; color: var(--text-blanco); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.song-row-sub { font-size: 0.8rem; color: var(--text-muted); margin-top: 3px; }
+.action-icons-wrap { display: flex; gap: 12px; align-items: center; }
+
+.delete-btn { background: none; border: none; color: #b33939; font-size: 1.1rem; cursor: pointer; padding: 4px; }
+.add-to-show-btn {
+  background: none; border: none; color: var(--text-dorado);
+  font-size: 0.8rem; font-weight: 700; border: 1px solid var(--text-dorado);
+  padding: 4px 8px; border-radius: 6px; cursor: pointer;
+}
+.add-to-show-btn.added { background: var(--text-dorado); color: var(--bg-main); }
+
+/* FORMULARIO NUEVA CANCION */
+.peña-form { display: flex; flex-direction: column; gap: 16px; max-width: 500px; margin: 0 auto; width: 100%; }
+.peña-group { display: flex; flex-direction: column; gap: 6px; }
+.peña-label { font-size: 0.8rem; font-weight: 600; color: var(--text-dorado); letter-spacing: 0.5px; }
+.peña-input, .peña-select, .peña-textarea {
+  background: rgba(255,255,255,0.04); border: 1px solid rgba(226, 194, 133, 0.2);
+  border-radius: 10px; padding: 12px; color: var(--text-blanco); font-family: var(--font-ui); font-size: 0.95rem; outline: none;
+}
+.peña-textarea { font-family: var(--font-letras); font-size: 1.05rem; min-height: 200px; line-height: 1.6; }
+.peña-submit-btn {
+  background: var(--btn-bordo); color: var(--text-blanco); border: none;
+  padding: 16px; border-radius: 12px; font-family: var(--font-ui); font-weight: 700; font-size: 1rem; cursor: pointer; margin-top: 10px;
 }
 
-.form-container {
-    background-color: var(--card-bg);
-    width: 100%;
-    max-width: 500px;
-    max-height: 90vh;
-    border-radius: var(--border-radius);
-    padding: 20px;
-    overflow-y: auto;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-    border: 1px solid #333;
+/* REPERTORIO DEL SHOW */
+.start-show-action-btn {
+  width: 100%; padding: 16px; background: var(--btn-bordo); color: var(--text-blanco); border: none;
+  border-radius: 12px; font-family: var(--font-ui); font-weight: 700; font-size: 1rem;
+  cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 16px;
 }
 
-.form-container h2 {
-    margin-bottom: 15px;
-    color: var(--primary-color);
-    font-size: 1.4rem;
-}
+/* VIVO INDIVIDUAL */
+#live-player-mode { position: fixed; inset: 0; z-index: 200; background: var(--bg-main); display: none; flex-direction: column; }
+#live-player-mode.active { display: flex; }
+.live-player-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; border-bottom: 1px solid var(--border-color); background: rgba(0,0,0,0.2); }
+.live-player-meta { text-align: center; flex: 1; min-width: 0; padding: 0 10px; }
+.live-player-title { font-family: var(--font-titulos); font-size: 1.1rem; color: var(--text-dorado); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.live-player-subtitle { font-size: 0.8rem; color: var(--text-muted); margin-top: 2px; }
 
-/* Elementos de formulario */
-.form-group {
-    margin-bottom: 15px;
-}
+.live-player-controls-bar { display: flex; align-items: center; gap: 8px; padding: 10px 16px; background: rgba(255,255,255,0.02); border-bottom: 1px solid var(--border-color); }
+.live-ctrl-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(226, 194, 133, 0.2); color: var(--text-blanco); padding: 6px 12px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; }
 
-.form-group label {
-    display: block;
-    margin-bottom: 5px;
-    font-size: 0.9rem;
-    color: var(--text-muted);
-}
+.live-scroll-view { flex: 1; overflow-y: auto; padding: 24px 20px 140px; -webkit-overflow-scrolling: touch; }
+.lyrics-render-box { font-family: var(--font-letras); font-size: 1.2rem; line-height: 2.1; white-space: pre-wrap; color: var(--text-blanco); }
+.lyrics-render-box .chord { color: var(--chord-color); font-weight: 700; font-family: var(--font-ui); font-size: 1.05rem; display: inline-block; margin-top: -0.4em; vertical-align: middle; }
 
-.form-group input, 
-.form-group select, 
-.form-group textarea {
-    width: 100%;
-    padding: 10px;
-    background-color: #2b2b2b;
-    border: 1px solid #444;
-    border-radius: 4px;
-    color: #fff;
-    font-size: 1rem;
-}
+.live-footer-nav { position: absolute; bottom: 0; left: 0; right: 0; padding: 16px; display: flex; align-items: center; justify-content: space-between; background: linear-gradient(to top, var(--bg-main) 70%, transparent); }
+.nav-circle-btn { width: 48px; height: 48px; border-radius: 50%; background: var(--card-cancionero); border: 1px solid var(--text-dorado); color: var(--text-dorado); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; cursor: pointer; }
+.nav-circle-btn.next-song { background: var(--text-dorado); color: var(--bg-main); }
+.nav-circle-btn.disabled { opacity: 0.2; pointer-events: none; }
 
-.form-group input:focus, 
-.form-group select:focus, 
-.form-group textarea:focus {
-    outline: none;
-    border-color: var(--primary-color);
-}
+.empty-peña { text-align: center; padding: 40px 20px; color: var(--text-muted); font-size: 0.9rem; }
+.toast-peña { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: var(--btn-bordo); color: white; padding: 10px 20px; border-radius: 30px; font-size: 0.85rem; z-index: 500; display: none; }
 
-.form-row {
-    display: flex;
-    gap: 10px;
-}
-
-.form-row .form-group {
-    flex: 1;
-}
-
-/* Botones del Formulario */
-.form-buttons {
-    display: flex;
-    gap: 10px;
-    margin-top: 20px;
-}
-
-.btn {
-    flex: 1;
-    padding: 12px;
-    border: none;
-    border-radius: 4px;
-    font-size: 1rem;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.btn-primary {
-    background-color: var(--primary-color);
-    color: #000;
-}
-
-.btn-secondary {
-    background-color: #444;
-    color: #fff;
-}
-
-/* ==========================================================================
-   BOTÓN FLOTANTE PRINCIPAL (+)
-   ========================================================================== */
-.btn-floating {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    width: 60px;
-    height: 60px;
-    background-color: var(--primary-color);
-    color: #000;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 2rem;
-    border: none;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-    cursor: pointer;
-    z-index: 900;
-}
-
-.btn-floating:high-light, .btn-floating:active {
-    transform: scale(0.95);
-}
-
-/* Estilos dinámicos para el modo Edición (v2.2.2+) */
-.edit-mode-header {
-    color: var(--accent-blue) !important;
-}
-
-.btn-edit-save {
-    background-color: var(--accent-blue) !important;
-    color: #fff !important;
+/* --- OPTIMIZACIÓN PARA PANTALLAS GRANDES (TABLETS) --- */
+@media (min-width: 900px) {
+  .main-menu-container { padding: 60px; }
+  .brand-title { font-size: 3rem; }
+  .menu-card { max-width: 700px; padding: 30px; }
+  .song-row { padding: 22px; }
+  .lyrics-render-box { font-size: 1.6rem; }
 }
