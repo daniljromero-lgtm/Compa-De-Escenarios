@@ -7,6 +7,38 @@ let currentGenreFilter = 'chacarera';
 let showSetlistIds = [];
 let screenHistory = ['screen-main-menu'];
 
+/* ===================== PANTALLA COMPLETA ===================== */
+
+window.enterFullscreen = async function () {
+  const el = document.documentElement;
+
+  try {
+    if (el.requestFullscreen) {
+      await el.requestFullscreen();
+    } else if (el.webkitRequestFullscreen) {
+      el.webkitRequestFullscreen();
+    } else if (el.msRequestFullscreen) {
+      el.msRequestFullscreen();
+    }
+  } catch (e) {
+    console.log("Fullscreen no disponible:", e);
+  }
+}
+
+window.exitFullscreen = async function () {
+  try {
+    if (document.fullscreenElement) {
+      await document.exitFullscreen();
+    } else if (document.webkitFullscreenElement) {
+      document.webkitExitFullscreen();
+    } else if (document.msFullscreenElement) {
+      document.msExitFullscreen();
+    }
+  } catch (e) {
+    console.log("No se pudo salir del modo pantalla completa:", e);
+  }
+}
+
 // ===== MODO EDICIÓN =====
 let editingSongId = null;
 let editingSongData = null;
@@ -198,25 +230,47 @@ window.deleteSong = function(id) {
 }
 
 /* ===================== MOTOR SHOW EN VIVO ===================== */
-window.startLiveShow = function() {
+window.startLiveShow = async function() {
+
   if (showSetlistIds.length === 0) {
     showToast("Agregá canciones al show primero");
     return;
   }
+
+  await enterFullscreen();
+
   currentLiveIndex = 0;
-  document.getElementById('live-player-mode').classList.add('active');
+
+  document
+    .getElementById('live-player-mode')
+    .classList.add('active');
+
   loadLiveSong();
 }
 
-window.exitLiveShow = function() {
+window.exitLiveShow = async function() {
+
   stopAutoscroll();
-  document.getElementById('live-player-mode').classList.remove('active');
+
+  document
+    .getElementById('live-player-mode')
+    .classList.remove('active');
+
+  await exitFullscreen();
 }
 
-window.quickViewSong = function(id) {
+window.quickViewSong = async function(id) {
+
   showSetlistIds = [id];
+
   currentLiveIndex = 0;
-  document.getElementById('live-player-mode').classList.add('active');
+
+  await enterFullscreen();
+
+  document
+    .getElementById('live-player-mode')
+    .classList.add('active');
+
   loadLiveSong();
 }
 
