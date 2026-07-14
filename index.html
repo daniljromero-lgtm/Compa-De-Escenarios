@@ -136,6 +136,43 @@
 
   </div>
   </section>
+  <section class="screen" id="screen-prepare-show">
+  <div class="scroll-area">
+    <h2 class="brand-title" style="text-align:center; font-size:1.6rem; margin-bottom:24px;">Preparar Show</h2>
+
+    <div class="peña-group">
+      <label class="peña-label">Tamaño de letra</label>
+      <div class="prepare-control-row" style="display: flex; align-items: center; justify-content: space-between; margin-top: 8px;">
+        <button class="live-ctrl-btn" onclick="adjustFontSize(-2)">A-</button>
+        <span id="prepare-font-size-value">20 px</span>
+        <button class="live-ctrl-btn" onclick="adjustFontSize(2)">A+</button>
+      </div>
+    </div>
+
+    <div class="peña-group">
+      <label class="peña-label">Velocidad de autoscroll</label>
+      <div class="prepare-control-row" style="display: flex; align-items: center; justify-content: space-between; margin-top: 8px;">
+        <button class="live-ctrl-btn" onclick="adjustScrollSpeed(-1)">-</button>
+        <span id="prepare-scroll-speed-value">22</span>
+        <button class="live-ctrl-btn" onclick="adjustScrollSpeed(1)">+</button>
+      </div>
+    </div>
+
+    <div class="peña-group" style="margin-top: 15px;">
+      <label class="prepare-checkbox" style="display: flex; align-items: center; gap: 10px; color: var(--text-muted); font-size: 0.95rem;">
+        <input type="checkbox" id="prepare-autostart-scroll" style="transform: scale(1.2);">
+        Iniciar autoscroll automáticamente
+      </label>
+    </div>
+
+    <div class="peña-group" style="margin-top: 20px;">
+      <label class="peña-label">Canciones del repertorio</label>
+      <div id="prepare-show-preview" style="margin-top: 10px;"></div>
+    </div>
+
+    <button class="start-show-action-btn" onclick="startPreparedShow()" style="margin-top: 30px; background: var(--text-dorado); color: #000; font-weight: bold;">▶ COMENZAR SHOW</button>
+  </div>
+  </section>
 </div>
 
 <div id="live-player-mode">
