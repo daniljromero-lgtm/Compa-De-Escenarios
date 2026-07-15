@@ -177,12 +177,16 @@
 
 <div id="live-player-mode">
   <div class="live-player-header">
-    <button class="live-ctrl-btn" onclick="exitLiveShow()">Salir</button>
+        <button class="live-ctrl-btn" onclick="exitLiveShow()">
+      Salir
+    </button>
+
     <div class="live-player-meta">
-      <div class="live-player-title" id="live-meta-title">Título de la Canción</div>
-      <div class="live-player-subtitle" id="live-meta-sub">Género • Tonalidad • BPM</div>
+      <div id="live-meta-title" class="live-player-title"></div>
+      <div id="live-meta-sub" class="live-player-subtitle"></div>
     </div>
-    <button class="live-ctrl-btn" onclick="resetLiveScroll()">Reiniciar</button>
+
+    <div style="width:70px;"></div>
   </div>
 
   <div class="live-player-controls-bar">
