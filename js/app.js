@@ -420,6 +420,7 @@ window.loadLiveSong = function() {
 
   triggerNextOnNextScroll = false;
   resetLiveScroll();
+  document.getElementById("live-scroll-area").scrollTop = 0;
 }
 
 window.changeLiveSong = function(direction) {
