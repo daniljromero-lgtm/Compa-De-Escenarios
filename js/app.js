@@ -6,6 +6,7 @@ let songsArray = [];
 let currentGenreFilter = 'chacarera';
 let showSetlistIds = [];
 let screenHistory = ['screen-main-menu'];
+let autoStartScroll = false;
 
 /* ===================== PANTALLA COMPLETA ===================== */
 
@@ -96,7 +97,132 @@ window.navigateBack = function() {
 }
 
 window.openCancioneroView = function() { navigateTo('screen-cancionero-list'); renderSongs(); }
-window.openShowsView = function() { navigateTo('screen-shows-repertoire'); renderShowRepertoire(); }
+window.openShowsView = function(){
+
+  navigateTo(
+    "screen-shows-repertoire"
+  );
+
+  renderShowRepertoire();
+
+  renderPrepareShow();
+
+}
+window.renderPrepareShow = function(){
+
+  const target =
+    document.getElementById(
+      "prepare-show-preview"
+    );
+
+  if(!target) return;
+
+  const repertorio =
+    songsArray.filter(song =>
+      showSetlistIds.includes(song.id)
+    );
+
+  if(repertorio.length === 0){
+
+    target.innerHTML = `
+      <div class="empty-peña">
+        No hay canciones seleccionadas.
+      </div>
+    `;
+
+    return;
+
+  }
+
+  target.innerHTML = repertorio.map(
+
+    (song,index)=>`
+
+      <div class="song-row">
+
+        <div
+          class="song-avatar"
+          style="background:var(--card-shows);">
+
+          ${index+1}
+
+        </div>
+
+        <div class="song-meta-info">
+
+          <div class="song-row-title">
+
+            ${song.title}
+
+          </div>
+
+          <div class="song-row-sub">
+
+            ${song.key}
+            •
+            ${song.genre.toUpperCase()}
+
+          </div>
+
+        </div>
+
+      </div>
+
+    `
+
+  ).join("");
+
+  document.getElementById(
+    "prepare-font-size-value"
+  ).innerText =
+    `${currentFontSize}px`;
+
+  document.getElementById(
+    "prepare-scroll-speed-value"
+  ).innerText =
+    scrollSpeed;
+
+}
+window.startPreparedShow = async function(){
+
+  autoStartScroll =
+    document.getElementById(
+      "prepare-autostart-scroll"
+    ).checked;
+
+  if(showSetlistIds.length===0){
+
+    showToast(
+      "Agregá canciones al repertorio."
+    );
+
+    return;
+
+  }
+
+  currentLiveIndex = 0;
+
+  document
+    .getElementById("live-player-mode")
+    .classList.add("active");
+
+  await enterFullscreen();
+
+  loadLiveSong();
+
+  if(autoStartScroll){
+
+    setTimeout(()=>{
+
+      startAutoscroll();
+
+    },500);
+
+  }
+
+}
+
+
 
 /* ===================== CONEXIÓN EN TIEMPO REAL CON CLOUD FIRESTORE ===================== */
 db.collection('Canciones').onSnapshot((snapshot) => {
@@ -188,6 +314,8 @@ window.renderShowRepertoire = function() {
       <button class="delete-btn" onclick="toggleSongInSetlist('${song.id}')" style="color:var(--text-dorado)">Quitar</button>
     </div>
   `).join('');
+  
+  renderPrepareShow();
 }
 
 window.toggleSongInSetlist = function(id) {
@@ -365,14 +493,28 @@ document.getElementById('live-scroll-area').addEventListener('touchend', functio
   }
 });
 
-window.adjustScrollSpeed = function(delta) {
-  scrollSpeed = Math.max(5, scrollSpeed - (delta * 3));
-  if (isAutoscrolling) { stopAutoscroll(); startAutoscroll(); }
+window.adjustFontSize = function(delta){
+  currentFontSize = Math.max(12, Math.min(36, currentFontSize + delta));
+  const lyrics = document.getElementById("lyrics-render-target");
+  if(lyrics){
+    lyrics.style.fontSize = `${currentFontSize}px`;
+  }
+  const label = document.getElementById("prepare-font-size-value");
+  if(label){
+    label.innerText = `${currentFontSize} px`;
+  }
 }
 
-window.adjustFontSize = function(delta) {
-  currentFontSize = Math.max(12, Math.min(36, currentFontSize + delta));
-  document.getElementById('lyrics-render-target').style.fontSize = `${currentFontSize}px`;
+window.adjustScrollSpeed = function(delta){
+  scrollSpeed = Math.max(5, scrollSpeed - (delta * 3));
+  if(isAutoscrolling){
+    stopAutoscroll();
+    startAutoscroll();
+  }
+  const label = document.getElementById("prepare-scroll-speed-value");
+  if(label){
+    label.innerText = scrollSpeed;
+  }
 }
 
 window.editSong = function(id){
