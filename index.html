@@ -175,6 +175,96 @@
   </section>
 </div>
 
+<!-- ========================================================= -->
+<!-- MODO ENSAYO (NUEVO V2.5)                                   -->
+<!-- ========================================================= -->
+
+<div id="screen-live-preview" class="screen hidden">
+
+    <div class="preview-header">
+
+        <button
+            class="secondary"
+            id="btnPreviewBack">
+            ← Volver
+        </button>
+
+        <h2 id="preview-song-title">
+            Vista previa
+        </h2>
+
+    </div>
+
+    <div class="preview-controls">
+
+        <button id="preview-font-minus">
+            A-
+        </button>
+
+        <button id="preview-font-plus">
+            A+
+        </button>
+
+        <button id="preview-scroll-toggle">
+            ▶ AutoScroll
+        </button>
+
+        <button id="preview-stage-button">
+            Ir al Escenario
+        </button>
+
+    </div>
+
+    <div
+        id="preview-lyrics"
+        class="lyrics-container">
+    </div>
+
+</div>
+<!-- ========================================================= -->
+<!-- MODO ESCENARIO (NUEVO V2.5)                               -->
+<!-- ========================================================= -->
+
+<div id="screen-stage" class="screen hidden">
+
+    <div id="stage-toolbar">
+
+        <button
+            id="stage-exit-button"
+            class="secondary">
+            ← Salir
+        </button>
+
+        <span id="stage-song-counter">
+            1 / 1
+        </span>
+
+        <button
+            id="stage-fullscreen-button">
+            ⛶
+        </button>
+
+    </div>
+
+    <div
+        id="stage-lyrics"
+        class="lyrics-container">
+    </div>
+
+    <div id="stage-navigation">
+
+        <button id="stage-prev-song">
+            ◀ Anterior
+        </button>
+
+        <button id="stage-next-song">
+            Siguiente ▶
+        </button>
+
+    </div>
+
+</div>
+  
 <div id="live-player-mode">
   <div class="live-player-header">
         <button class="live-ctrl-btn" onclick="exitLiveShow()">
