@@ -57,7 +57,7 @@ window.showScreen = function(screenId) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   const activeScreen = document.getElementById(screenId);
   if(activeScreen) activeScreen.classList.add('active');
-  
+
   const backBtn = document.getElementById('global-back-btn');
   const addBtn = document.getElementById('header-add-btn');
   const headerTitle = document.getElementById('main-header-title');
@@ -77,6 +77,9 @@ window.showScreen = function(screenId) {
     } else if (screenId === 'screen-shows-repertoire') {
       addBtn.style.display = 'none';
       headerTitle.innerText = "Shows en Vivo";
+    } else if (screenId === 'screen-live-preview') {
+      addBtn.style.display = 'none';
+      headerTitle.innerText = "Modo Ensayo";
     }
   }
 }
@@ -391,85 +394,57 @@ window.exitLiveShow = async function() {
  * MODO ENSAYO
  ******************************************************************/
 
+let currentSong = null;
+
 function openPreviewSong(song) {
-    if (!song) return;
+  if (!song) return;
 
-    currentSong = song;
+  currentSong = song;
 
-    // 1. Cargar el título
-    const titleEl = document.getElementById("preview-song-title");
-    if (titleEl) {
-        titleEl.textContent = song.title || "Sin título";
-    }
+  // 1. Asignar Título
+  const titleEl = document.getElementById("preview-song-title");
+  if (titleEl) {
+    titleEl.textContent = song.title || "Sin título";
+  }
 
-    // 2. Cargar la letra
-    const lyricsEl = document.getElementById("preview-lyrics");
-    if (lyricsEl) {
-        lyricsEl.innerText = song.lyrics || "Sin letra disponible";
-        lyricsEl.style.color = "#ffffff";
-        lyricsEl.style.whiteSpace = "pre-wrap";
-    }
+  // 2. Asignar y procesar la Letra (con acordes resaltados si los hay)
+  const lyricsEl = document.getElementById("preview-lyrics");
+  if (lyricsEl) {
+    const rawLyrics = song.lyrics || "Sin letra disponible";
+    const processedLyrics = rawLyrics.replace(/\[([^\]]+)\]/g, '<span class="chord">$1</span>');
+    lyricsEl.innerHTML = processedLyrics;
+  }
 
-    // 3. Ocultar todas las pantallas con clase 'screen'
-    document.querySelectorAll(".screen").forEach(s => {
-        s.classList.add("hidden");
-        s.style.display = "none";
-    });
-
-    // 4. Mostrar únicamente el Modo Ensayo
-    const previewScreen = document.getElementById("screen-live-preview");
-    if (previewScreen) {
-        previewScreen.classList.remove("hidden");
-        previewScreen.style.display = "block";
-    }
+  // 3. Navegar usando el sistema nativo de tu app
+  navigateTo("screen-live-preview");
 }
 
 window.quickViewSong = async function(id) {
-    const song = songsArray.find(s => s.id === id);
-    
-    if (!song) {
-        console.error("No se encontró la canción con ID:", id);
-        return;
-    }
-
-    openPreviewSong(song);
+  const song = songsArray.find(s => s.id === id);
+  if (!song) {
+    showToast("No se encontró la canción");
+    return;
+  }
+  openPreviewSong(song);
 }
 
 function closePreview() {
-    // Ocultamos Modo Ensayo
-    const previewScreen = document.getElementById("screen-live-preview");
-    if (previewScreen) {
-        previewScreen.classList.add("hidden");
-        previewScreen.style.display = "none";
-    }
-
-    // Volvemos a mostrar la lista de canciones
-    if (typeof showScreen === "function") {
-        showScreen("screen-song-list");
-    } else {
-        const listScreen = document.getElementById("screen-song-list");
-        if (listScreen) {
-            listScreen.classList.remove("hidden");
-            listScreen.style.display = "block";
-        }
-    }
+  navigateBack();
 }
 
-
 async function goToStageMode() {
-    if (!currentSong) return;
+  if (!currentSong) return;
 
-    // Reutilizamos la lógica del modo en vivo anterior
-    showSetlistIds = [currentSong.id];
-    currentLiveIndex = 0;
+  showSetlistIds = [currentSong.id];
+  currentLiveIndex = 0;
 
-    await enterFullscreen();
+  await enterFullscreen();
 
-    document
-        .getElementById('live-player-mode')
-        .classList.add('active');
+  document
+    .getElementById('live-player-mode')
+    .classList.add('active');
 
-    loadLiveSong();
+  loadLiveSong();
 }
 
 window.loadLiveSong = function() {
@@ -616,12 +591,8 @@ window.showToast = function(msg) {
   toast.style.display = 'block';
   setTimeout(() => { toast.style.display = 'none'; }, 2500);
 }
-// Listeners para Modo Ensayo (v2.5)
-document
-    .getElementById("btnPreviewBack")
-    ?.addEventListener("click", closePreview);
 
-document
-    .getElementById("preview-stage-button")
-    ?.addEventListener("click", goToStageMode);
+// Listeners para Modo Ensayo (v2.5)
+document.getElementById("btnPreviewBack")?.addEventListener("click", closePreview);
+document.getElementById("preview-stage-button")?.addEventListener("click", goToStageMode);
 
