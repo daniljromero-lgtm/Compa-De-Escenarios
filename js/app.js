@@ -407,18 +407,34 @@ function openPreviewSong(song) {
 
 }
 window.quickViewSong = async function(id) {
+    const song = songsArray.find(s => s.id === id);
+    
+    if (!song) {
+        console.error("No se encontró la canción con ID:", id);
+        return;
+    }
 
-  showSetlistIds = [id];
+    openPreviewSong(song);
+}
 
-  currentLiveIndex = 0;
+function closePreview() {
+    showScreen("screen-song-list");
+}
 
-  await enterFullscreen();
+async function goToStageMode() {
+    if (!currentSong) return;
 
-  document
-    .getElementById('live-player-mode')
-    .classList.add('active');
+    // Reutilizamos la lógica del modo en vivo anterior
+    showSetlistIds = [currentSong.id];
+    currentLiveIndex = 0;
 
-  loadLiveSong();
+    await enterFullscreen();
+
+    document
+        .getElementById('live-player-mode')
+        .classList.add('active');
+
+    loadLiveSong();
 }
 
 window.loadLiveSong = function() {
@@ -565,3 +581,12 @@ window.showToast = function(msg) {
   toast.style.display = 'block';
   setTimeout(() => { toast.style.display = 'none'; }, 2500);
 }
+// Listeners para Modo Ensayo (v2.5)
+document
+    .getElementById("btnPreviewBack")
+    ?.addEventListener("click", closePreview);
+
+document
+    .getElementById("preview-stage-button")
+    ?.addEventListener("click", goToStageMode);
+
