@@ -407,15 +407,22 @@ function openPreviewSong(song) {
     titleEl.textContent = song.title || "Sin título";
   }
 
-  // 2. Asignar y procesar la Letra (con acordes resaltados si los hay)
+  // 2. Asignar la Letra
   const lyricsEl = document.getElementById("preview-lyrics");
   if (lyricsEl) {
     const rawLyrics = song.lyrics || "Sin letra disponible";
-    const processedLyrics = rawLyrics.replace(/\[([^\]]+)\]/g, '<span class="chord">$1</span>');
+    // Si la letra tiene acordes entre corchetes los resalta, si no los muestra normales
+    const processedLyrics = rawLyrics.replace(/\[([^\]]+)\]/g, '<span class="chord" style="color: var(--text-dorado, #f39c12); font-weight: bold;">$1</span>');
+    
     lyricsEl.innerHTML = processedLyrics;
+    lyricsEl.style.display = "block";
+    lyricsEl.style.color = "#ffffff";
+    lyricsEl.style.whiteSpace = "pre-wrap";
+    lyricsEl.style.fontSize = "1.2rem";
+    lyricsEl.style.lineHeight = "1.6";
   }
 
-  // 3. Navegar usando el sistema nativo de tu app
+  // 3. Navegar a la pantalla
   navigateTo("screen-live-preview");
 }
 
