@@ -400,12 +400,14 @@ function openPreviewSong(song) {
     document.getElementById("preview-song-title").textContent =
         song.title || "Sin título";
 
-    document.getElementById("preview-lyrics").innerHTML =
-        formatLyrics(song.lyrics || "");
+    // Usamos directamente song.lyrics adaptando saltos de línea sin usar formatLyrics
+    document.getElementById("preview-lyrics").innerText =
+        song.lyrics || "";
 
     showScreen("screen-live-preview");
 
 }
+
 window.quickViewSong = async function(id) {
     const song = songsArray.find(s => s.id === id);
     
