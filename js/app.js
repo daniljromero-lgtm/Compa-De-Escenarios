@@ -386,7 +386,26 @@ window.exitLiveShow = async function() {
 
   await exitFullscreen();
 }
+/******************************************************************
+ * V2.5
+ * MODO ENSAYO
+ ******************************************************************/
 
+function openPreviewSong(song) {
+
+    if (!song) return;
+
+    currentSong = song;
+
+    document.getElementById("preview-song-title").textContent =
+        song.title || "Sin título";
+
+    document.getElementById("preview-lyrics").innerHTML =
+        formatLyrics(song.lyrics || "");
+
+    showScreen("screen-live-preview");
+
+}
 window.quickViewSong = async function(id) {
 
   showSetlistIds = [id];
