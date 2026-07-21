@@ -546,25 +546,24 @@ document.getElementById('live-scroll-area').addEventListener('touchend', functio
   }
 });
 
-window.adjustFontSize = function(delta){
-  // Aumentamos el límite máximo a 50px por si querés ver la letra más grande en el escenario
-  currentFontSize = Math.max(12, Math.min(50, currentFontSize + delta));
+window.adjustFontSize = function(delta) {
+  currentFontSize = Math.max(12, Math.min(60, currentFontSize + delta));
   
-  // 1. Cambia el tamaño en el Modo Escenario (Pantalla Completa)
-  const lyrics = document.getElementById("lyrics-render-target");
-  if(lyrics){
-    lyrics.style.fontSize = `${currentFontSize}px`;
+  // 1. Cambia el tamaño en el Modo Ensayo (Vista previa)
+  const lyricsPreview = document.getElementById("preview-lyrics");
+  if (lyricsPreview) {
+    lyricsPreview.style.fontSize = `${currentFontSize}px`;
   }
 
-  // 2. Cambia el tamaño en el Modo Ensayo (Vista Previa)
-  const previewLyrics = document.getElementById("preview-lyrics");
-  if(previewLyrics){
-    previewLyrics.style.fontSize = `${currentFontSize}px`;
+  // 2. Cambia el tamaño en el Modo Escenario (Pantalla Completa)
+  const lyricsStage = document.getElementById("lyrics-render-target");
+  if (lyricsStage) {
+    lyricsStage.style.fontSize = `${currentFontSize}px`;
   }
 
-  // 3. Actualiza la etiqueta de texto si existe
+  // 3. Indicador de tamaño en la configuración previa
   const label = document.getElementById("prepare-font-size-value");
-  if(label){
+  if (label) {
     label.innerText = `${currentFontSize} px`;
   }
 }
@@ -611,7 +610,25 @@ window.showToast = function(msg) {
   setTimeout(() => { toast.style.display = 'none'; }, 2500);
 }
 
-// Listeners para Modo Ensayo (v2.5)
-document.getElementById("btnPreviewBack")?.addEventListener("click", closePreview);
-document.getElementById("preview-stage-button")?.addEventListener("click", goToStageMode);
+// Conexión de botones del Modo Ensayo (v2.5.1)
+document.getElementById("btnPreviewBack")?.addEventListener("click", function() {
+  if (typeof closePreview === "function") closePreview();
+  else navigateBack();
+});
+
+document.getElementById("preview-font-minus")?.addEventListener("click", function() {
+  adjustFontSize(-2);
+});
+
+document.getElementById("preview-font-plus")?.addEventListener("click", function() {
+  adjustFontSize(2);
+});
+
+document.getElementById("preview-scroll-toggle")?.addEventListener("click", function() {
+  if (typeof toggleAutoscroll === "function") toggleAutoscroll();
+});
+
+document.getElementById("preview-stage-button")?.addEventListener("click", function() {
+  if (typeof goToStageMode === "function") goToStageMode();
+});
 
