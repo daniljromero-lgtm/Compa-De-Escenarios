@@ -547,16 +547,28 @@ document.getElementById('live-scroll-area').addEventListener('touchend', functio
 });
 
 window.adjustFontSize = function(delta){
-  currentFontSize = Math.max(12, Math.min(36, currentFontSize + delta));
+  // Aumentamos el límite máximo a 50px por si querés ver la letra más grande en el escenario
+  currentFontSize = Math.max(12, Math.min(50, currentFontSize + delta));
+  
+  // 1. Cambia el tamaño en el Modo Escenario (Pantalla Completa)
   const lyrics = document.getElementById("lyrics-render-target");
   if(lyrics){
     lyrics.style.fontSize = `${currentFontSize}px`;
   }
+
+  // 2. Cambia el tamaño en el Modo Ensayo (Vista Previa)
+  const previewLyrics = document.getElementById("preview-lyrics");
+  if(previewLyrics){
+    previewLyrics.style.fontSize = `${currentFontSize}px`;
+  }
+
+  // 3. Actualiza la etiqueta de texto si existe
   const label = document.getElementById("prepare-font-size-value");
   if(label){
     label.innerText = `${currentFontSize} px`;
   }
 }
+
 
 window.adjustScrollSpeed = function(delta){
   scrollSpeed = Math.max(5, scrollSpeed - (delta * 3));
