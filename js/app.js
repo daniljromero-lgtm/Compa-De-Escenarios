@@ -392,20 +392,36 @@ window.exitLiveShow = async function() {
  ******************************************************************/
 
 function openPreviewSong(song) {
-
     if (!song) return;
 
     currentSong = song;
 
-    document.getElementById("preview-song-title").textContent =
-        song.title || "Sin título";
+    // 1. Cargar el título
+    const titleEl = document.getElementById("preview-song-title");
+    if (titleEl) {
+        titleEl.textContent = song.title || "Sin título";
+    }
 
-    // Usamos directamente song.lyrics adaptando saltos de línea sin usar formatLyrics
-    document.getElementById("preview-lyrics").innerText =
-        song.lyrics || "";
+    // 2. Cargar la letra
+    const lyricsEl = document.getElementById("preview-lyrics");
+    if (lyricsEl) {
+        lyricsEl.innerText = song.lyrics || "Sin letra disponible";
+        lyricsEl.style.color = "#ffffff";
+        lyricsEl.style.whiteSpace = "pre-wrap";
+    }
 
-    showScreen("screen-live-preview");
+    // 3. Ocultar todas las pantallas con clase 'screen'
+    document.querySelectorAll(".screen").forEach(s => {
+        s.classList.add("hidden");
+        s.style.display = "none";
+    });
 
+    // 4. Mostrar únicamente el Modo Ensayo
+    const previewScreen = document.getElementById("screen-live-preview");
+    if (previewScreen) {
+        previewScreen.classList.remove("hidden");
+        previewScreen.style.display = "block";
+    }
 }
 
 window.quickViewSong = async function(id) {
@@ -420,8 +436,25 @@ window.quickViewSong = async function(id) {
 }
 
 function closePreview() {
-    showScreen("screen-song-list");
+    // Ocultamos Modo Ensayo
+    const previewScreen = document.getElementById("screen-live-preview");
+    if (previewScreen) {
+        previewScreen.classList.add("hidden");
+        previewScreen.style.display = "none";
+    }
+
+    // Volvemos a mostrar la lista de canciones
+    if (typeof showScreen === "function") {
+        showScreen("screen-song-list");
+    } else {
+        const listScreen = document.getElementById("screen-song-list");
+        if (listScreen) {
+            listScreen.classList.remove("hidden");
+            listScreen.style.display = "block";
+        }
+    }
 }
+
 
 async function goToStageMode() {
     if (!currentSong) return;
