@@ -287,7 +287,7 @@
   
 <div id="live-player-mode">
   <div class="live-player-header">
-        <button class="live-ctrl-btn" onclick="exitLiveShow()">
+    <button class="live-ctrl-btn" onclick="exitLiveShow()">
       Salir
     </button>
 
@@ -299,15 +299,10 @@
     <div style="width:70px;"></div>
   </div>
 
-  <div class="live-player-controls-bar">
-    <span>Letra:</span>
-    <button class="live-ctrl-btn" onclick="adjustFontSize(-2)">A-</button>
-    <button class="live-ctrl-btn" onclick="adjustFontSize(2)">A+</button>
-    <div style="width: 10px;"></div>
-    <span>Scroll:</span>
-    <button class="live-ctrl-btn" id="scroll-play-btn" onclick="toggleAutoscroll()">Play ▶</button>
-    <button class="live-ctrl-btn" onclick="adjustScrollSpeed(-1)">Vel -</button>
-    <button class="live-ctrl-btn" onclick="adjustScrollSpeed(1)">Vel +</button>
+  <div id="floating-live-controls" style="position: fixed; top: 70px; right: 15px; z-index: 99999; display: flex; gap: 8px; opacity: 0.55; background: rgba(0,0,0,0.4); padding: 5px 10px; border-radius: 20px; backdrop-filter: blur(4px);">
+    <button class="live-ctrl-btn" onclick="adjustFontSize(-2)" style="min-width: 38px; height: 38px; border-radius: 50%; padding: 0; background: #222; color: #fff; border: 1px solid #666; font-weight: bold;">A-</button>
+    <button class="live-ctrl-btn" onclick="adjustFontSize(2)" style="min-width: 38px; height: 38px; border-radius: 50%; padding: 0; background: #222; color: #fff; border: 1px solid #666; font-weight: bold;">A+</button>
+    <button class="live-ctrl-btn" id="scroll-play-btn" onclick="toggleAutoscroll()" style="min-width: 38px; height: 38px; border-radius: 50%; padding: 0; background: #222; color: #fff; border: 1px solid #666;">▶</button>
   </div>
 
   <div class="live-scroll-view" id="live-scroll-area">
