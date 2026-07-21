@@ -173,6 +173,26 @@
     <button class="start-show-action-btn" onclick="startPreparedShow()" style="margin-top: 30px; background: var(--text-dorado); color: #000; font-weight: bold;">▶ COMENZAR SHOW</button>
   </div>
   </section>
+    <section class="screen" id="screen-live-preview">
+    <div class="scroll-area" style="padding: 15px;">
+      
+      <div style="display: flex; gap: 10px; align-items: center; justify-content: space-between; margin-bottom: 20px;">
+        <button class="secondary" id="btnPreviewBack" style="padding: 8px 16px; border-radius: 8px; border: 1px solid var(--text-muted); background: transparent; color: #fff;">
+          ← Volver
+        </button>
+        <button id="preview-stage-button" class="start-show-action-btn" style="background: var(--text-dorado); color: #000; font-weight: bold; margin: 0;">
+          Ir al Escenario
+        </button>
+      </div>
+
+      <h2 id="preview-song-title" class="brand-title" style="text-align: center; font-size: 1.6rem; margin-bottom: 20px;">
+        Vista previa
+      </h2>
+
+      <pre id="preview-lyrics" class="lyrics-render-box" style="white-space: pre-wrap; font-family: inherit; font-size: 1.1rem; line-height: 1.6; color: #ffffff; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px;"></pre>
+
+    </div>
+  </section>
 </div>
 
 <!-- ========================================================= -->
