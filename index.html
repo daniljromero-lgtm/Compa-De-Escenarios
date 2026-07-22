@@ -173,42 +173,43 @@
     <button class="start-show-action-btn" onclick="startPreparedShow()" style="margin-top: 30px; background: var(--text-dorado); color: #000; font-weight: bold;">▶ COMENZAR SHOW</button>
   </div>
   </section>
-        <section class="screen hidden" id="screen-live-preview" style="background: #110d08; min-height: 100vh; padding: 10px 15px;">
+          <section class="screen hidden" id="screen-live-preview" style="background: #19110b !important; position: fixed; top: 0; left: 0; width: 100%; height: 100vh; z-index: 999; overflow-y: auto !important; -webkit-overflow-scrolling: touch; padding: 12px 15px 50px 15px; box-sizing: border-box;">
     
     <div style="display: flex; align-items: center; justify-content: space-between; padding-bottom: 8px; margin-bottom: 12px; border-bottom: 1px solid rgba(212, 175, 55, 0.15);">
       
-      <button class="secondary" id="btnPreviewBack" style="padding: 4px 12px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); color: #d1d1d1; font-size: 0.8rem; cursor: pointer;">
+      <button class="secondary" id="btnPreviewBack" style="padding: 5px 12px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.15); background: rgba(0,0,0,0.3); color: #d1d1d1; font-size: 0.8rem; cursor: pointer;">
         Salir
       </button>
 
       <div style="text-align: center; flex-grow: 1; margin: 0 10px;">
-        <h2 id="preview-song-title" style="color: #d4af37; font-family: 'Times New Roman', Times, serif; font-size: 1.25rem; font-weight: bold; letter-spacing: 1px; margin: 0; text-transform: uppercase;">
-          DE AMORES TUYOS
+        <h2 id="preview-song-title" style="color: #e6c875 !important; font-family: 'Playfair Display', 'Cinzel', serif !important; font-size: 1.25rem; font-weight: bold; letter-spacing: 1px; margin: 0; text-transform: uppercase;">
+          Cargando canción...
         </h2>
-        <div id="preview-song-meta" style="color: #998877; font-family: sans-serif; font-size: 0.7rem; letter-spacing: 0.5px; margin-top: 2px; text-transform: uppercase;">
-          FOLKLORE • Tonalidad: A • 90 BPM
+        <div id="preview-song-meta" style="color: #a8947d !important; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.72rem; letter-spacing: 0.5px; margin-top: 2px; text-transform: uppercase;">
+          -- • Tonalidad: -- • -- BPM
         </div>
       </div>
 
-      <button id="preview-stage-button" style="background: rgba(212, 175, 55, 0.08); color: #d4af37; border: 1px solid rgba(212, 175, 55, 0.3); border-radius: 6px; padding: 4px 12px; font-size: 0.8rem; cursor: pointer;">
+      <button id="preview-stage-button" style="background: rgba(212, 175, 55, 0.08); color: #e6c875; border: 1px solid rgba(212, 175, 55, 0.25); border-radius: 6px; padding: 5px 10px; font-size: 0.78rem; cursor: pointer;">
         Pantalla Completa ⛶
       </button>
     </div>
 
-    <div style="display: flex; gap: 8px; align-items: center; justify-content: flex-start; margin-bottom: 15px; color: #a09080; font-size: 0.8rem;">
+    <div style="display: flex; gap: 8px; align-items: center; justify-content: flex-start; margin-bottom: 15px; color: #a8947d; font-size: 0.8rem;">
       <span>Letra:</span>
       <button class="live-ctrl-btn" id="preview-font-minus" style="padding: 2px 8px; background: rgba(255,255,255,0.05); color: #ccc; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; font-size: 0.75rem;">A-</button>
       <button class="live-ctrl-btn" id="preview-font-plus" style="padding: 2px 8px; background: rgba(255,255,255,0.05); color: #ccc; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; font-size: 0.75rem;">A+</button>
       
       <span style="margin-left: 10px;">Scroll:</span>
       <button class="live-ctrl-btn" id="preview-scroll-toggle" style="padding: 2px 8px; background: rgba(255,255,255,0.05); color: #ccc; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; font-size: 0.75rem;">Play ▶</button>
-      <button class="live-ctrl-btn" style="padding: 2px 8px; background: rgba(255,255,255,0.05); color: #ccc; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; font-size: 0.75rem;">Vel -</button>
-      <button class="live-ctrl-btn" style="padding: 2px 8px; background: rgba(255,255,255,0.05); color: #ccc; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; font-size: 0.75rem;">Vel +</button>
     </div>
 
-    <pre id="preview-lyrics" class="lyrics-render-box" style="white-space: pre-wrap; font-family: 'Times New Roman', Times, serif; font-size: 1.15rem; line-height: 1.5; color: #f0e6d2; background: transparent; padding: 5px 0; border: none; margin: 0;"></pre>
+    <div style="padding-bottom: 80px;">
+      <pre id="preview-lyrics" class="lyrics-render-box" style="white-space: pre-wrap; font-family: 'Playfair Display', serif !important; font-size: 1.18rem; line-height: 1.6; color: #f0e3ce !important; background: transparent !important; border: none; margin: 0; padding: 0; overflow: visible;"></pre>
+    </div>
 
   </section>
+
 
 <!-- ========================================================= -->
 <!-- MODO ESCENARIO (NUEVO V2.5)                               -->
