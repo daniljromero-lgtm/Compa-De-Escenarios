@@ -173,7 +173,7 @@
     <button class="start-show-action-btn" onclick="startPreparedShow()" style="margin-top: 30px; background: var(--text-dorado); color: #000; font-weight: bold;">▶ COMENZAR SHOW</button>
   </div>
   </section>
-              <section class="screen hidden" id="screen-live-preview" style="background: #19110b !important; position: fixed; top: 0; left: 0; width: 100%; height: 100vh; z-index: 999; display: flex; flex-direction: column; padding: 10px 12px 0 12px; box-sizing: border-box; overflow: hidden;">
+                <section class="screen hidden" id="screen-live-preview" style="background: #19110b !important; position: fixed; top: 0; left: 0; width: 100%; height: 100vh; z-index: 999; display: flex; flex-direction: column; padding: 10px 12px 0 12px; box-sizing: border-box;">
     
     <div style="flex-shrink: 0; background: #19110b; z-index: 10; padding-bottom: 4px;">
       
@@ -214,7 +214,9 @@
   </section>
 
   <script>
-    let previewScrollInterval = null;
+    if (typeof previewScrollInterval === 'undefined') {
+      var previewScrollInterval = null;
+    }
     function togglePreviewScroll() {
       const container = document.getElementById('preview-scroll-container');
       const btn = document.getElementById('preview-scroll-toggle');
@@ -225,7 +227,7 @@
         if (btn) btn.innerText = 'Play ▶';
       } else {
         if (btn) btn.innerText = 'Pausa ⏸';
-        previewScrollInterval = setInterval(() => {
+        previewScrollInterval = setInterval(function() {
           if (container) {
             container.scrollTop += 1;
             if (container.scrollTop + container.clientHeight >= container.scrollHeight) {
@@ -238,6 +240,7 @@
       }
     }
   </script>
+
 
 
 <!-- ========================================================= -->
