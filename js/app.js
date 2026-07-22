@@ -404,14 +404,23 @@ function openPreviewSong(song) {
   // 1. Asignar Título
   const titleEl = document.getElementById("preview-song-title");
   if (titleEl) {
-    titleEl.textContent = song.title || "Sin título";
+    titleEl.textContent = song.title || song.titulo || "Sin título";
   }
 
-  // 2. Asignar la Letra
+  // 2. Asignar Metadatos (Ritmo • Tonalidad • BPM)
+  const metaEl = document.getElementById("preview-song-meta");
+  if (metaEl) {
+    const ritmo = song.rhythm || song.ritmo || "FOLKLORE";
+    const tono = song.key || song.tonalidad || "--";
+    const bpm = song.bpm ? `${song.bpm} BPM` : "-- BPM";
+    metaEl.textContent = `${ritmo} • Tonalidad: ${tono} • ${bpm}`;
+  }
+
+  // 3. Asignar la Letra
   const lyricsEl = document.getElementById("preview-lyrics");
   if (lyricsEl) {
-    const rawLyrics = song.lyrics || "Sin letra disponible";
-    // Si la letra tiene acordes entre corchetes los resalta, si no los muestra normales
+    const rawLyrics = song.lyrics || song.letra || "Sin letra disponible";
+    // Si la letra tiene acordes entre corchetes los resalta en dorado
     const processedLyrics = rawLyrics.replace(/\[([^\]]+)\]/g, '<span class="chord" style="color: var(--text-dorado, #f39c12); font-weight: bold;">$1</span>');
     
     lyricsEl.innerHTML = processedLyrics;
@@ -422,7 +431,7 @@ function openPreviewSong(song) {
     lyricsEl.style.lineHeight = "1.6";
   }
 
-  // 3. Navegar a la pantalla
+  // 4. Navegar a la pantalla
   navigateTo("screen-live-preview");
 }
 
