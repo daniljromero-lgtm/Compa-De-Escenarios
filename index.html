@@ -173,43 +173,41 @@
     <button class="start-show-action-btn" onclick="startPreparedShow()" style="margin-top: 30px; background: var(--text-dorado); color: #000; font-weight: bold;">▶ COMENZAR SHOW</button>
   </div>
   </section>
-      <section class="screen hidden" id="screen-live-preview">
-    <div class="scroll-area" style="padding: 15px; max-width: 900px; margin: 0 auto;">
+        <section class="screen hidden" id="screen-live-preview" style="background: #110d08; min-height: 100vh; padding: 10px 15px;">
+    
+    <div style="display: flex; align-items: center; justify-content: space-between; padding-bottom: 8px; margin-bottom: 12px; border-bottom: 1px solid rgba(212, 175, 55, 0.15);">
       
-      <div style="display: flex; align-items: center; justify-content: space-between; padding-bottom: 10px; border-bottom: 1px solid rgba(212, 175, 55, 0.2); margin-bottom: 15px;">
-        
-        <button class="secondary" id="btnPreviewBack" style="padding: 6px 14px; border-radius: 6px; border: 1px solid #555; background: #1a1a1a; color: #ccc; font-size: 0.85rem; cursor: pointer;">
-          ← Volver
-        </button>
+      <button class="secondary" id="btnPreviewBack" style="padding: 4px 12px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); color: #d1d1d1; font-size: 0.8rem; cursor: pointer;">
+        Salir
+      </button>
 
-        <div style="text-align: center; flex-grow: 1; margin: 0 15px;">
-          <h2 id="preview-song-title" style="color: #d4af37; font-family: serif; font-size: 1.4rem; font-weight: bold; letter-spacing: 1px; margin: 0; text-transform: uppercase;">
-            Cargando canción...
-          </h2>
-          <div id="preview-song-meta" style="color: #aaa; font-size: 0.75rem; letter-spacing: 0.5px; margin-top: 3px; text-transform: uppercase;">
-            -- • Tonalidad: -- • -- BPM
-          </div>
+      <div style="text-align: center; flex-grow: 1; margin: 0 10px;">
+        <h2 id="preview-song-title" style="color: #d4af37; font-family: 'Times New Roman', Times, serif; font-size: 1.25rem; font-weight: bold; letter-spacing: 1px; margin: 0; text-transform: uppercase;">
+          DE AMORES TUYOS
+        </h2>
+        <div id="preview-song-meta" style="color: #998877; font-family: sans-serif; font-size: 0.7rem; letter-spacing: 0.5px; margin-top: 2px; text-transform: uppercase;">
+          FOLKLORE • Tonalidad: A • 90 BPM
         </div>
-
-        <button id="preview-stage-button" style="background: rgba(212, 175, 55, 0.15); color: #d4af37; border: 1px solid #d4af37; border-radius: 6px; padding: 6px 14px; font-size: 0.85rem; font-weight: bold; cursor: pointer; transition: all 0.2s;">
-          Pantalla Completa ⛶
-        </button>
       </div>
 
-      <div style="display: flex; gap: 10px; align-items: center; justify-content: center; flex-wrap: wrap; margin-bottom: 20px; background: rgba(0,0,0,0.3); padding: 8px 12px; border-radius: 8px;">
-        <span style="color: #888; font-size: 0.8rem; font-weight: bold;">Letra:</span>
-        <button class="live-ctrl-btn" id="preview-font-minus" style="padding: 4px 10px; background: #222; color: #fff; border: 1px solid #444; border-radius: 4px;">A-</button>
-        <button class="live-ctrl-btn" id="preview-font-plus" style="padding: 4px 10px; background: #222; color: #fff; border: 1px solid #444; border-radius: 4px;">A+</button>
-        
-        <div style="width: 1px; height: 16px; background: #444; margin: 0 5px;"></div>
-
-        <span style="color: #888; font-size: 0.8rem; font-weight: bold;">Scroll:</span>
-        <button class="live-ctrl-btn" id="preview-scroll-toggle" style="padding: 4px 10px; background: #222; color: #fff; border: 1px solid #444; border-radius: 4px;">Play ▶</button>
-      </div>
-
-      <pre id="preview-lyrics" class="lyrics-render-box" style="white-space: pre-wrap; font-family: inherit; font-size: 20px; line-height: 1.6; color: #ffffff; background: rgba(0,0,0,0.15); padding: 20px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);"></pre>
-
+      <button id="preview-stage-button" style="background: rgba(212, 175, 55, 0.08); color: #d4af37; border: 1px solid rgba(212, 175, 55, 0.3); border-radius: 6px; padding: 4px 12px; font-size: 0.8rem; cursor: pointer;">
+        Pantalla Completa ⛶
+      </button>
     </div>
+
+    <div style="display: flex; gap: 8px; align-items: center; justify-content: flex-start; margin-bottom: 15px; color: #a09080; font-size: 0.8rem;">
+      <span>Letra:</span>
+      <button class="live-ctrl-btn" id="preview-font-minus" style="padding: 2px 8px; background: rgba(255,255,255,0.05); color: #ccc; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; font-size: 0.75rem;">A-</button>
+      <button class="live-ctrl-btn" id="preview-font-plus" style="padding: 2px 8px; background: rgba(255,255,255,0.05); color: #ccc; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; font-size: 0.75rem;">A+</button>
+      
+      <span style="margin-left: 10px;">Scroll:</span>
+      <button class="live-ctrl-btn" id="preview-scroll-toggle" style="padding: 2px 8px; background: rgba(255,255,255,0.05); color: #ccc; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; font-size: 0.75rem;">Play ▶</button>
+      <button class="live-ctrl-btn" style="padding: 2px 8px; background: rgba(255,255,255,0.05); color: #ccc; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; font-size: 0.75rem;">Vel -</button>
+      <button class="live-ctrl-btn" style="padding: 2px 8px; background: rgba(255,255,255,0.05); color: #ccc; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; font-size: 0.75rem;">Vel +</button>
+    </div>
+
+    <pre id="preview-lyrics" class="lyrics-render-box" style="white-space: pre-wrap; font-family: 'Times New Roman', Times, serif; font-size: 1.15rem; line-height: 1.5; color: #f0e6d2; background: transparent; padding: 5px 0; border: none; margin: 0;"></pre>
+
   </section>
 
 <!-- ========================================================= -->
