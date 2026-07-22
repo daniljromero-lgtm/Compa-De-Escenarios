@@ -407,14 +407,16 @@ function openPreviewSong(song) {
     titleEl.textContent = song.title || song.titulo || "Sin título";
   }
 
-  // 2. Asignar Metadatos (Ritmo • Tonalidad • BPM)
-  const metaEl = document.getElementById("preview-song-meta");
-  if (metaEl) {
-    const ritmo = song.rhythm || song.ritmo || "FOLKLORE";
-    const tono = song.key || song.tonalidad || "--";
-    const bpm = song.bpm ? `${song.bpm} BPM` : "-- BPM";
-    metaEl.textContent = `${ritmo} • Tonalidad: ${tono} • ${bpm}`;
-  }
+  // 2. Asignar Metadatos con el Género Real (Chacarera, Zamba, Gato, Chamamé, etc.)
+const metaEl = document.getElementById("preview-song-meta");
+if (metaEl) {
+  const genero = (song.genre || song.estilo || song.ritmo || "Chacarera").toUpperCase();
+  const tono = song.key || song.tonalidad || "--";
+  const bpm = song.bpm ? `${song.bpm} BPM` : "-- BPM";
+  
+  metaEl.textContent = `${genero} • Tonalidad: ${tono} • ${bpm}`;
+}
+
 
   // 3. Asignar la Letra
   const lyricsEl = document.getElementById("preview-lyrics");
