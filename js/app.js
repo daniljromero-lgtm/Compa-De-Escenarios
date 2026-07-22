@@ -494,9 +494,12 @@ window.toggleAutoscroll = function() {
 window.startAutoscroll = function() {
   isAutoscrolling = true;
   
-  // El signo ? evita que el código se rompa si el elemento no existe
-  document.getElementById('scroll-play-btn')?.innerText = "Pausa ⏸";
-  document.getElementById('center-play-trigger')?.innerText = "⏸";
+  // Cambiar texto de los botones de forma segura solo si existen en pantalla
+  const scrollBtn = document.getElementById('scroll-play-btn');
+  if (scrollBtn) scrollBtn.innerText = "Pausa ⏸";
+
+  const centerBtn = document.getElementById('center-play-trigger');
+  if (centerBtn) centerBtn.innerText = "⏸";
   
   const container = document.getElementById('live-scroll-area');
   autoscrollInterval = setInterval(() => {
@@ -513,9 +516,12 @@ window.startAutoscroll = function() {
 window.stopAutoscroll = function() {
   isAutoscrolling = false;
   
-  // El signo ? evita que el código se rompa si el elemento no existe
-  document.getElementById('scroll-play-btn')?.innerText = "Play ▶";
-  document.getElementById('center-play-trigger')?.innerText = "▶";
+  // Cambiar texto de los botones de forma segura solo si existen en pantalla
+  const scrollBtn = document.getElementById('scroll-play-btn');
+  if (scrollBtn) scrollBtn.innerText = "Play ▶";
+
+  const centerBtn = document.getElementById('center-play-trigger');
+  if (centerBtn) centerBtn.innerText = "▶";
   
   clearInterval(autoscrollInterval);
 }
