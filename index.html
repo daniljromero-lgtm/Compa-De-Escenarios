@@ -173,64 +173,41 @@
     <button class="start-show-action-btn" onclick="startPreparedShow()" style="margin-top: 30px; background: var(--text-dorado); color: #000; font-weight: bold;">▶ COMENZAR SHOW</button>
   </div>
   </section>
-   <section class="screen hidden" id="screen-live-preview">
-    <style>
-      /* Asegura que cuando tenga la clase hidden NO se muestre jamás al iniciar */
-      #screen-live-preview.hidden {
-        display: none !important;
-      }
-      /* Estilos activos cuando la pantalla está visible */
-      #screen-live-preview {
-        background: #19110b !important;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100vh;
-        z-index: 999;
-        display: flex;
-        flex-direction: column;
-        padding: 10px 12px 0 12px;
-        box-sizing: border-box;
-      }
-    </style>
-    
-    <div style="flex-shrink: 0; background: #19110b; z-index: 10; padding-bottom: 4px;">
+     <section class="screen hidden" id="screen-live-preview">
+    <div style="position: sticky; top: 0; background: #19110b; z-index: 10; padding: 10px 12px 6px 12px; border-bottom: 1px solid rgba(212, 175, 55, 0.15);">
       
-      <div style="display: flex; align-items: center; justify-content: space-between; padding-bottom: 8px; margin-bottom: 8px; border-bottom: 1px solid rgba(212, 175, 55, 0.15); gap: 8px;">
-        
-        <button class="secondary" id="btnPreviewBack" style="padding: 4px 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.15); background: rgba(0,0,0,0.3); color: #d1d1d1; font-size: 0.78rem; cursor: pointer; flex-shrink: 0;">
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+        <button class="secondary" id="btnPreviewBack" onclick="navigateTo('screen-song-list')" style="padding: 5px 12px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.4); color: #d1d1d1; font-size: 0.8rem; cursor: pointer; flex-shrink: 0;">
           Salir
         </button>
 
         <div style="text-align: center; flex-grow: 1; min-width: 0; overflow: hidden;">
-          <h2 id="preview-song-title" style="color: #d4af37 !important; font-family: 'Cinzel', serif !important; font-size: 1.05rem; font-weight: 500 !important; letter-spacing: 1.5px; margin: 0; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+          <h2 id="preview-song-title" style="color: #d4af37 !important; font-family: 'Cinzel', serif !important; font-size: 1.05rem; font-weight: 600 !important; letter-spacing: 1px; margin: 0; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
             Cargando canción...
           </h2>
-          <div id="preview-song-meta" style="color: #a8947d !important; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.68rem; letter-spacing: 0.5px; margin-top: 2px; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+          <div id="preview-song-meta" style="color: #a8947d !important; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.7rem; letter-spacing: 0.5px; margin-top: 2px; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
             CHACARERA • Tonalidad: -- • -- BPM
           </div>
         </div>
 
-        <button id="preview-stage-button" style="background: rgba(212, 175, 55, 0.08); color: #e6c875; border: 1px solid rgba(212, 175, 55, 0.25); border-radius: 6px; padding: 4px 10px; font-size: 0.78rem; font-weight: 600; cursor: pointer; flex-shrink: 0;">
+        <button id="preview-stage-button" style="background: rgba(212, 175, 55, 0.1); color: #e6c875; border: 1px solid rgba(212, 175, 55, 0.3); border-radius: 6px; padding: 5px 12px; font-size: 0.8rem; font-weight: 600; cursor: pointer; flex-shrink: 0;">
           Show ⛶
         </button>
       </div>
 
-      <div style="display: flex; gap: 6px; align-items: center; justify-content: flex-start; margin-bottom: 6px; color: #a8947d; font-size: 0.78rem;">
+      <div style="display: flex; gap: 8px; align-items: center; margin-top: 8px; color: #a8947d; font-size: 0.8rem;">
         <span>Letra:</span>
         <button class="live-ctrl-btn" id="preview-font-minus" style="padding: 2px 8px; background: rgba(255,255,255,0.05); color: #ccc; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; font-size: 0.75rem;">A-</button>
         <button class="live-ctrl-btn" id="preview-font-plus" style="padding: 2px 8px; background: rgba(255,255,255,0.05); color: #ccc; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; font-size: 0.75rem;">A+</button>
         
         <span style="margin-left: 8px;">Scroll:</span>
-        <button class="live-ctrl-btn" id="preview-scroll-toggle" onclick="togglePreviewScroll()" style="padding: 2px 10px; background: rgba(212, 175, 55, 0.12); color: #e6c875; border: 1px solid rgba(212, 175, 55, 0.3); border-radius: 4px; font-size: 0.75rem; font-weight: bold; cursor: pointer;">Play ▶</button>
+        <button class="live-ctrl-btn" id="preview-scroll-toggle" onclick="togglePreviewScroll()" style="padding: 2px 10px; background: rgba(212, 175, 55, 0.15); color: #e6c875; border: 1px solid rgba(212, 175, 55, 0.3); border-radius: 4px; font-size: 0.75rem; font-weight: bold; cursor: pointer;">Play ▶</button>
       </div>
     </div>
 
-    <div id="preview-scroll-container" style="flex-grow: 1; overflow-y: auto !important; -webkit-overflow-scrolling: touch; padding-top: 6px; padding-bottom: 80px;">
-      <pre id="preview-lyrics" class="lyrics-render-box" style="white-space: pre-wrap; font-family: 'Playfair Display', serif !important; font-size: 1.15rem; line-height: 1.6; color: #f0e3ce !important; background: transparent !important; border: none; margin: 0; padding: 0; overflow: visible;"></pre>
+    <div id="preview-scroll-container" style="padding: 15px 12px 80px 12px; overflow-y: auto; height: calc(100vh - 100px); -webkit-overflow-scrolling: touch;">
+      <pre id="preview-lyrics" class="lyrics-render-box" style="white-space: pre-wrap; font-family: 'Playfair Display', serif !important; font-size: 1.15rem; line-height: 1.6; color: #f0e3ce !important; background: transparent !important; border: none; margin: 0; padding: 0;"></pre>
     </div>
-
   </section>
 
   <script>
@@ -240,7 +217,6 @@
     function togglePreviewScroll() {
       const container = document.getElementById('preview-scroll-container');
       const btn = document.getElementById('preview-scroll-toggle');
-      
       if (previewScrollInterval) {
         clearInterval(previewScrollInterval);
         previewScrollInterval = null;
@@ -260,8 +236,6 @@
       }
     }
   </script>
-
-
 
 <!-- ========================================================= -->
 <!-- MODO ESCENARIO (NUEVO V2.5)                               -->
