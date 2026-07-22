@@ -407,34 +407,42 @@ function openPreviewSong(song) {
     titleEl.textContent = song.title || song.titulo || "Sin título";
   }
 
-  // 2. Asignar Metadatos con el Género Real (Chacarera, Zamba, Gato, Chamamé, etc.)
-const metaEl = document.getElementById("preview-song-meta");
-if (metaEl) {
-  const genero = (song.genre || song.estilo || song.ritmo || "Chacarera").toUpperCase();
-  const tono = song.key || song.tonalidad || "--";
-  const bpm = song.bpm ? `${song.bpm} BPM` : "-- BPM";
-  
-  metaEl.textContent = `${genero} • Tonalidad: ${tono} • ${bpm}`;
-}
+  // 2. Asignar Metadatos con el Género Real
+  const metaEl = document.getElementById("preview-song-meta");
+  if (metaEl) {
+    const genero = (song.genre || song.estilo || song.ritmo || "Chacarera").toUpperCase();
+    const tono = song.key || song.tonalidad || "--";
+    const bpm = song.bpm ? `${song.bpm} BPM` : "-- BPM";
+    
+    metaEl.textContent = `${genero} • Tonalidad: ${tono} • ${bpm}`;
+  }
 
-
-  // 3. Asignar la Letra
+  // 3. Asignar la Letra y renderizar acordes
   const lyricsEl = document.getElementById("preview-lyrics");
   if (lyricsEl) {
     const rawLyrics = song.lyrics || song.letra || "Sin letra disponible";
-    // Si la letra tiene acordes entre corchetes los resalta en dorado
-    const processedLyrics = rawLyrics.replace(/\[([^\]]+)\]/g, '<span class="chord" style="color: var(--text-dorado, #f39c12); font-weight: bold;">$1</span>');
+    // Resalta los acordes entre corchetes [Am] en dorado
+    const processedLyrics = rawLyrics.replace(/\[([^\]]+)\]/g, '<span class="chord" style="color: #d4af37; font-weight: bold;">$1</span>');
     
     lyricsEl.innerHTML = processedLyrics;
-    lyricsEl.style.display = "block";
-    lyricsEl.style.color = "#ffffff";
-    lyricsEl.style.whiteSpace = "pre-wrap";
-    lyricsEl.style.fontSize = "1.2rem";
-    lyricsEl.style.lineHeight = "1.6";
   }
 
-  // 4. Navegar a la pantalla
-  navigateTo("screen-live-preview");
+  // 4. Mostrar la pantalla de forma directa y limpia
+  const previewScreen = document.getElementById("screen-live-preview");
+  if (previewScreen) {
+    // Ocultar la pantalla actual si hay una abierta
+    document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
+    
+    // Mostrar la vista previa
+    previewScreen.classList.remove("hidden");
+    previewScreen.style.setProperty("display", "flex", "important");
+  } else {
+    navigateTo("screen-live-preview");
+  }
+
+  // Resetear scroll arriba al abrir nueva canción
+  const container = document.getElementById('preview-scroll-container');
+  if (container) container.scrollTop = 0;
 }
 
 window.quickViewSong = async function(id) {
