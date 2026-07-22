@@ -493,23 +493,30 @@ window.toggleAutoscroll = function() {
 
 window.startAutoscroll = function() {
   isAutoscrolling = true;
-  document.getElementById('scroll-play-btn').innerText = "Pausa ⏸";
-  document.getElementById('center-play-trigger').innerText = "⏸";
+  
+  // El signo ? evita que el código se rompa si el elemento no existe
+  document.getElementById('scroll-play-btn')?.innerText = "Pausa ⏸";
+  document.getElementById('center-play-trigger')?.innerText = "⏸";
   
   const container = document.getElementById('live-scroll-area');
   autoscrollInterval = setInterval(() => {
-    container.scrollTop += 1;
-    if (container.scrollTop >= (container.scrollHeight - container.clientHeight - 2)) {
-      stopAutoscroll();
-      setTimeout(() => { changeLiveSong(1); }, 800);
+    if (container) {
+      container.scrollTop += 1;
+      if (container.scrollTop >= (container.scrollHeight - container.clientHeight - 2)) {
+        stopAutoscroll();
+        setTimeout(() => { changeLiveSong(1); }, 800);
+      }
     }
   }, scrollSpeed);
 }
 
 window.stopAutoscroll = function() {
   isAutoscrolling = false;
-  document.getElementById('scroll-play-btn').innerText = "Play ▶";
-  document.getElementById('center-play-trigger').innerText = "▶";
+  
+  // El signo ? evita que el código se rompa si el elemento no existe
+  document.getElementById('scroll-play-btn')?.innerText = "Play ▶";
+  document.getElementById('center-play-trigger')?.innerText = "▶";
+  
   clearInterval(autoscrollInterval);
 }
 
