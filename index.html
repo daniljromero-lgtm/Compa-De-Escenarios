@@ -173,8 +173,27 @@
     <button class="start-show-action-btn" onclick="startPreparedShow()" style="margin-top: 30px; background: var(--text-dorado); color: #000; font-weight: bold;">▶ COMENZAR SHOW</button>
   </div>
   </section>
-  
-   <section class="screen hidden" id="screen-live-preview" style="display: none !important; background: #19110b !important; position: fixed; top: 0; left: 0; width: 100%; height: 100vh; z-index: 999; flex-direction: column; padding: 10px 12px 0 12px; box-sizing: border-box;">
+   <section class="screen hidden" id="screen-live-preview">
+    <style>
+      /* Asegura que cuando tenga la clase hidden NO se muestre jamás al iniciar */
+      #screen-live-preview.hidden {
+        display: none !important;
+      }
+      /* Estilos activos cuando la pantalla está visible */
+      #screen-live-preview {
+        background: #19110b !important;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        z-index: 999;
+        display: flex;
+        flex-direction: column;
+        padding: 10px 12px 0 12px;
+        box-sizing: border-box;
+      }
+    </style>
     
     <div style="flex-shrink: 0; background: #19110b; z-index: 10; padding-bottom: 4px;">
       
