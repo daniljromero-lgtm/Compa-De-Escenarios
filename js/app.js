@@ -11,7 +11,9 @@
 // Inicializar Cloud Firestore (Usando el objeto expuesto globalmente)
 const db = firebase.firestore();
 
-/* ===================== ESTADO DE LA APLICACIÓN ===================== */
+/* ==========================================================
+   ESTADO GLOBAL DE LA APLICACIÓN
+========================================================== */
 let songsArray = [];
 let currentGenreFilter = 'chacarera';
 let showSetlistIds = [];
