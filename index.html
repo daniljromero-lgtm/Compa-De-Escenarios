@@ -177,13 +177,13 @@
     </div>
   </section>
 
-  <section class="screen hidden" id="screen-live-preview" style="background: #19110b !important; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 99999; display: flex; flex-direction: column; padding: 10px 12px 0 12px; box-sizing: border-box; overflow: hidden;">
+    <section class="screen hidden" id="screen-live-preview" style="background: #19110b !important; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 99999; display: flex; flex-direction: column; padding: 10px 12px 0 12px; box-sizing: border-box; overflow: hidden;">
     
     <div style="flex-shrink: 0; background: #19110b; z-index: 10; padding-bottom: 4px;">
       <div style="display: flex; align-items: center; justify-content: space-between; padding-bottom: 8px; margin-bottom: 8px; border-bottom: 1px solid rgba(212, 175, 55, 0.15); gap: 8px;">
         
-        <button class="secondary" id="btnPreviewBack" onclick="document.getElementById('screen-live-preview').classList.add('hidden'); if(typeof navigateTo==='function') navigateTo('screen-cancionero-list');" style="padding: 4px 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.15); background: rgba(0,0,0,0.3); color: #d1d1d1; font-size: 0.78rem; cursor: pointer; flex-shrink: 0;">
-          Salir
+        <button class="secondary" id="btnPreviewBack" onclick="closePreviewAndBack()" style="padding: 6px 14px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.4); color: #d1d1d1; font-size: 0.85rem; font-weight: 600; cursor: pointer; flex-shrink: 0;">
+          ← Salir
         </button>
 
         <div style="text-align: center; flex-grow: 1; min-width: 0; overflow: hidden;">
@@ -195,7 +195,7 @@
           </div>
         </div>
 
-        <button id="preview-stage-button" style="background: rgba(212, 175, 55, 0.08); color: #e6c875; border: 1px solid rgba(212, 175, 55, 0.25); border-radius: 6px; padding: 4px 10px; font-size: 0.78rem; font-weight: 600; cursor: pointer; flex-shrink: 0;">
+        <button id="preview-stage-button" onclick="startLiveFromPreview()" style="background: rgba(212, 175, 55, 0.2); color: #e6c875; border: 1px solid rgba(212, 175, 55, 0.4); border-radius: 6px; padding: 6px 12px; font-size: 0.85rem; font-weight:bold; cursor: pointer; flex-shrink: 0;">
           Show ⛶
         </button>
       </div>
@@ -240,6 +240,29 @@
             }
           }
         }, 40);
+      }
+    }
+
+    function closePreviewAndBack() {
+      const preview = document.getElementById('screen-live-preview');
+      if (preview) {
+        preview.classList.add('hidden');
+      }
+      if (typeof navigateBack === 'function') {
+        navigateBack();
+      } else if (typeof navigateTo === 'function') {
+        navigateTo('screen-cancionero-list');
+      }
+    }
+
+    function startLiveFromPreview() {
+      if (typeof currentSong !== 'undefined' && currentSong) {
+        document.getElementById('screen-live-preview').classList.add('hidden');
+        if (typeof startLiveShow === 'function') {
+          startLiveShow([currentSong], 0);
+        } else if (typeof openStageMode === 'function') {
+          openStageMode(currentSong);
+        }
       }
     }
   </script>
