@@ -1,7 +1,21 @@
 /* ==========================================================
-   CANCIONERO - COMPAÑERO DE ESCENARIO
-   Versión 2.5 STABLE
-   Archivo principal de lógica (app.js)
+   Cancionero - Compañero de Escenario
+
+   Archivo: js/app.js
+   Versión: 2.5 STABLE
+   Estado: Base estable
+   Fecha: Julio 2026
+
+   Descripción:
+   Lógica principal de la aplicación.
+   - Navegación entre pantallas
+   - Integración con Firebase Firestore
+   - Gestión del Cancionero
+   - Vista Previa / Ensayo
+   - Modo Escenario
+   - Autoscroll
+   - Gestión del repertorio
+
 ========================================================== */
 
 /* ==========================================================
