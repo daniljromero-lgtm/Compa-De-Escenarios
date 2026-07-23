@@ -235,6 +235,64 @@
           if (container) {
             container.scrollTop += 1;
             if (container.scrollTop + container.clientHeight >= container.scrollHeight) {
+  <section class="screen hidden" id="screen-live-preview" style="background: #19110b !important; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 99999; flex-direction: column; padding: 10px 12px 0 12px; box-sizing: border-box; overflow: hidden;">
+    
+    <div style="flex-shrink: 0; background: #19110b; z-index: 10; padding-bottom: 4px;">
+      <div style="display: flex; align-items: center; justify-content: space-between; padding-bottom: 8px; margin-bottom: 8px; border-bottom: 1px solid rgba(212, 175, 55, 0.15); gap: 8px;">
+        
+        <button class="secondary" id="btnPreviewBack" onclick="forceClosePreview()" style="padding: 6px 14px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.4); color: #d1d1d1; font-size: 0.85rem; font-weight: 600; cursor: pointer; flex-shrink: 0;">
+          ← Salir
+        </button>
+
+        <div style="text-align: center; flex-grow: 1; min-width: 0; overflow: hidden;">
+          <h2 id="preview-song-title" style="color: #d4af37 !important; font-family: 'Cinzel', serif !important; font-size: 1.05rem; font-weight: 500 !important; letter-spacing: 1.5px; margin: 0; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+            Cargando canción...
+          </h2>
+          <div id="preview-song-meta" style="color: #a8947d !important; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.68rem; letter-spacing: 0.5px; margin-top: 2px; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+            CHACARERA • Tonalidad: -- • -- BPM
+          </div>
+        </div>
+
+        <button id="preview-stage-button" onclick="forceOpenLiveShow()" style="background: rgba(212, 175, 55, 0.2); color: #e6c875; border: 1px solid rgba(212, 175, 55, 0.4); border-radius: 6px; padding: 6px 12px; font-size: 0.85rem; font-weight:bold; cursor: pointer; flex-shrink: 0;">
+          Show ⛶
+        </button>
+      </div>
+
+      <div style="display: flex; gap: 6px; align-items: center; justify-content: flex-start; margin-bottom: 6px; color: #a8947d; font-size: 0.78rem;">
+        <span>Letra:</span>
+        <button class="live-ctrl-btn" id="preview-font-minus" style="padding: 2px 8px; background: rgba(255,255,255,0.05); color: #ccc; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; font-size: 0.75rem;">A-</button>
+        <button class="live-ctrl-btn" id="preview-font-plus" style="padding: 2px 8px; background: rgba(255,255,255,0.05); color: #ccc; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; font-size: 0.75rem;">A+</button>
+        
+        <span style="margin-left: 8px;">Scroll:</span>
+        <button class="live-ctrl-btn" id="preview-scroll-toggle" onclick="togglePreviewScroll()" style="padding: 2px 10px; background: rgba(212, 175, 55, 0.12); color: #e6c875; border: 1px solid rgba(212, 175, 55, 0.3); border-radius: 4px; font-size: 0.75rem; font-weight: bold; cursor: pointer;">Play ▶</button>
+      </div>
+    </div>
+
+    <div id="preview-scroll-container" style="flex-grow: 1; overflow-y: auto !important; -webkit-overflow-scrolling: touch; padding-top: 6px; padding-bottom: 80px;">
+      <pre id="preview-lyrics" class="lyrics-render-box" style="white-space: pre-wrap; font-family: 'Playfair Display', serif !important; font-size: 1.15rem; line-height: 1.6; color: #f0e3ce !important; background: transparent !important; border: none; margin: 0; padding: 0; overflow: visible;"></pre>
+    </div>
+
+  </section>
+
+  <script>
+    if (typeof previewScrollInterval === 'undefined') {
+      var previewScrollInterval = null;
+    }
+
+    function togglePreviewScroll() {
+      const container = document.getElementById('preview-scroll-container');
+      const btn = document.getElementById('preview-scroll-toggle');
+      
+      if (previewScrollInterval) {
+        clearInterval(previewScrollInterval);
+        previewScrollInterval = null;
+        if (btn) btn.innerText = 'Play ▶';
+      } else {
+        if (btn) btn.innerText = 'Pausa ⏸';
+        previewScrollInterval = setInterval(function() {
+          if (container) {
+            container.scrollTop += 1;
+            if (container.scrollTop + container.clientHeight >= container.scrollHeight) {
               clearInterval(previewScrollInterval);
               previewScrollInterval = null;
               if (btn) btn.innerText = 'Play ▶';
@@ -244,24 +302,29 @@
       }
     }
 
-    // CIERRA Y OCULTA POR COMPLETO LA VISTA PREVIA
+    // CIERRA LA VISTA PREVIA Y VUELVE AL CANCIONERO
     function forceClosePreview() {
+      if (previewScrollInterval) {
+        clearInterval(previewScrollInterval);
+        previewScrollInterval = null;
+      }
+      const btn = document.getElementById('preview-scroll-toggle');
+      if (btn) btn.innerText = 'Play ▶';
+
       const preview = document.getElementById('screen-live-preview');
       if (preview) {
         preview.classList.add('hidden');
         preview.style.display = 'none';
       }
-      if (typeof navigateBack === 'function') {
-        navigateBack();
-      }
     }
 
-    // ABRE EL MODO ESCENARIO / REPRODUCTOR EN VIVO CON FONDO NEGRO
+    // ABRE EL MODO SHOW CON PANTALLA COMPLETA
     function forceOpenLiveShow() {
-      // 1. Oculta la vista previa
-      forceClosePreview();
+      if (previewScrollInterval) {
+        clearInterval(previewScrollInterval);
+        previewScrollInterval = null;
+      }
 
-      // 2. Transfiere el título y la letra al reproductor del Show (#live-player-mode)
       const title = document.getElementById('preview-song-title')?.innerText || '';
       const meta = document.getElementById('preview-song-meta')?.innerText || '';
       const lyrics = document.getElementById('preview-lyrics')?.innerHTML || '';
@@ -274,19 +337,47 @@
       if (liveSub) liveSub.innerText = meta;
       if (liveLyrics) liveLyrics.innerHTML = lyrics;
 
-      // 3. Activa el reproductor flotante en vivo
+      // Solicitar pantalla completa nativa al navegador
+      if (document.documentElement.requestFullscreen) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      } else if (document.documentElement.webkitRequestFullscreen) {
+        document.documentElement.webkitRequestFullscreen().catch(() => {});
+      }
+
       const player = document.getElementById('live-player-mode');
       if (player) {
         player.classList.add('active');
         player.style.display = 'flex';
       }
 
-      // Si existe la función del sistema de app.js, también la llama por compatibilidad
       if (typeof startLiveShow === 'function' && typeof currentSong !== 'undefined' && currentSong) {
         startLiveShow([currentSong], 0);
       }
     }
+
+    // SOBREESCRIBIR exitLiveShow PARA SALIR LIMPIAMENTE DEL SHOW Y DE LA PANTALLA COMPLETA
+    window.exitLiveShow = function() {
+      // Salir de pantalla completa nativa si está activa
+      if (document.fullscreenElement || document.webkitFullscreenElement) {
+        if (document.exitFullscreen) {
+          document.exitFullscreen().catch(() => {});
+        } else if (document.webkitExitFullscreen) {
+          document.webkitExitFullscreen().catch(() => {});
+        }
+      }
+
+      // Ocultar reproductor Show
+      const player = document.getElementById('live-player-mode');
+      if (player) {
+        player.classList.remove('active');
+        player.style.display = 'none';
+      }
+
+      // Ocultar vista previa
+      forceClosePreview();
+    };
   </script>
+
   
 
   <div id="screen-stage" class="screen hidden">
