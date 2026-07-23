@@ -16,6 +16,12 @@
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
 <link rel="stylesheet" href="css/styles.css">
+<style>
+  /* Regla global para ocultar cualquier pantalla que tenga la clase hidden */
+  .screen.hidden {
+    display: none !important;
+  }
+</style>
 </head>
 <body>
 
@@ -120,95 +126,94 @@
   </section>
 
   <section class="screen" id="screen-shows-repertoire">
-  <div class="scroll-area">
+    <div class="scroll-area">
+      <button class="start-show-action-btn" onclick="navigateTo('screen-prepare-show')">
+        ⚙️ Preparar Show
+      </button>
 
-    <button
-      class="start-show-action-btn"
-      onclick="navigateTo('screen-prepare-show')">
-      ⚙️ Preparar Show
-    </button>
+      <h3 class="peña-label" style="margin-bottom:12px;">
+        Lista de temas seleccionados:
+      </h3>
 
-    <h3 class="peña-label" style="margin-bottom:12px;">
-      Lista de temas seleccionados:
-    </h3>
-
-    <div id="show-repertoire-target"></div>
-
-  </div>
+      <div id="show-repertoire-target"></div>
+    </div>
   </section>
+
   <section class="screen" id="screen-prepare-show">
-  <div class="scroll-area">
-    <h2 class="brand-title" style="text-align:center; font-size:1.6rem; margin-bottom:24px;">Preparar Show</h2>
+    <div class="scroll-area">
+      <h2 class="brand-title" style="text-align:center; font-size:1.6rem; margin-bottom:24px;">Preparar Show</h2>
 
-    <div class="peña-group">
-      <label class="peña-label">Tamaño de letra</label>
-      <div class="prepare-control-row" style="display: flex; align-items: center; justify-content: space-between; margin-top: 8px;">
-        <button class="live-ctrl-btn" onclick="adjustFontSize(-2)">A-</button>
-        <span id="prepare-font-size-value">20 px</span>
-        <button class="live-ctrl-btn" onclick="adjustFontSize(2)">A+</button>
+      <div class="peña-group">
+        <label class="peña-label">Tamaño de letra</label>
+        <div class="prepare-control-row" style="display: flex; align-items: center; justify-content: space-between; margin-top: 8px;">
+          <button class="live-ctrl-btn" onclick="adjustFontSize(-2)">A-</button>
+          <span id="prepare-font-size-value">20 px</span>
+          <button class="live-ctrl-btn" onclick="adjustFontSize(2)">A+</button>
+        </div>
       </div>
-    </div>
 
-    <div class="peña-group">
-      <label class="peña-label">Velocidad de autoscroll</label>
-      <div class="prepare-control-row" style="display: flex; align-items: center; justify-content: space-between; margin-top: 8px;">
-        <button class="live-ctrl-btn" onclick="adjustScrollSpeed(-1)">-</button>
-        <span id="prepare-scroll-speed-value">22</span>
-        <button class="live-ctrl-btn" onclick="adjustScrollSpeed(1)">+</button>
+      <div class="peña-group">
+        <label class="peña-label">Velocidad de autoscroll</label>
+        <div class="prepare-control-row" style="display: flex; align-items: center; justify-content: space-between; margin-top: 8px;">
+          <button class="live-ctrl-btn" onclick="adjustScrollSpeed(-1)">-</button>
+          <span id="prepare-scroll-speed-value">22</span>
+          <button class="live-ctrl-btn" onclick="adjustScrollSpeed(1)">+</button>
+        </div>
       </div>
-    </div>
 
-    <div class="peña-group" style="margin-top: 15px;">
-      <label class="prepare-checkbox" style="display: flex; align-items: center; gap: 10px; color: var(--text-muted); font-size: 0.95rem;">
-        <input type="checkbox" id="prepare-autostart-scroll" style="transform: scale(1.2);">
-        Iniciar autoscroll automáticamente
-      </label>
-    </div>
+      <div class="peña-group" style="margin-top: 15px;">
+        <label class="prepare-checkbox" style="display: flex; align-items: center; gap: 10px; color: var(--text-muted); font-size: 0.95rem;">
+          <input type="checkbox" id="prepare-autostart-scroll" style="transform: scale(1.2);">
+          Iniciar autoscroll automáticamente
+        </label>
+      </div>
 
-    <div class="peña-group" style="margin-top: 20px;">
-      <label class="peña-label">Canciones del repertorio</label>
-      <div id="prepare-show-preview" style="margin-top: 10px;"></div>
-    </div>
+      <div class="peña-group" style="margin-top: 20px;">
+        <label class="peña-label">Canciones del repertorio</label>
+        <div id="prepare-show-preview" style="margin-top: 10px;"></div>
+      </div>
 
-    <button class="start-show-action-btn" onclick="startPreparedShow()" style="margin-top: 30px; background: var(--text-dorado); color: #000; font-weight: bold;">▶ COMENZAR SHOW</button>
-  </div>
+      <button class="start-show-action-btn" onclick="startPreparedShow()" style="margin-top: 30px; background: var(--text-dorado); color: #000; font-weight: bold;">▶ COMENZAR SHOW</button>
+    </div>
   </section>
-    <section class="screen hidden" id="screen-live-preview" style="position: fixed !important; top: 0 !important; left: 0 !important; width: 100vw !important; height: 100vh !important; z-index: 99999 !important; background: #19110b !important; display: flex; flex-direction: column; box-sizing: border-box; overflow: hidden;">
+
+  <section class="screen hidden" id="screen-live-preview" style="background: #19110b !important; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 99999; display: flex; flex-direction: column; padding: 10px 12px 0 12px; box-sizing: border-box; overflow: hidden;">
     
-    <div style="flex-shrink: 0; background: #19110b; z-index: 10; padding: 10px 12px 6px 12px; border-bottom: 1px solid rgba(212, 175, 55, 0.15);">
-      
-      <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
-        <button class="secondary" id="btnPreviewBack" onclick="document.getElementById('screen-live-preview').classList.add('hidden'); document.getElementById('screen-live-preview').style.setProperty('display', 'none', 'important'); if(typeof navigateTo==='function') navigateTo('screen-song-list');" style="padding: 5px 12px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.4); color: #d1d1d1; font-size: 0.8rem; cursor: pointer; flex-shrink: 0;">
+    <div style="flex-shrink: 0; background: #19110b; z-index: 10; padding-bottom: 4px;">
+      <div style="display: flex; align-items: center; justify-content: space-between; padding-bottom: 8px; margin-bottom: 8px; border-bottom: 1px solid rgba(212, 175, 55, 0.15); gap: 8px;">
+        
+        <button class="secondary" id="btnPreviewBack" onclick="document.getElementById('screen-live-preview').classList.add('hidden'); if(typeof navigateTo==='function') navigateTo('screen-cancionero-list');" style="padding: 4px 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.15); background: rgba(0,0,0,0.3); color: #d1d1d1; font-size: 0.78rem; cursor: pointer; flex-shrink: 0;">
           Salir
         </button>
 
         <div style="text-align: center; flex-grow: 1; min-width: 0; overflow: hidden;">
-          <h2 id="preview-song-title" style="color: #d4af37 !important; font-family: 'Cinzel', serif !important; font-size: 1.05rem; font-weight: 600 !important; letter-spacing: 1px; margin: 0; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+          <h2 id="preview-song-title" style="color: #d4af37 !important; font-family: 'Cinzel', serif !important; font-size: 1.05rem; font-weight: 500 !important; letter-spacing: 1.5px; margin: 0; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
             Cargando canción...
           </h2>
-          <div id="preview-song-meta" style="color: #a8947d !important; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.7rem; letter-spacing: 0.5px; margin-top: 2px; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+          <div id="preview-song-meta" style="color: #a8947d !important; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.68rem; letter-spacing: 0.5px; margin-top: 2px; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
             CHACARERA • Tonalidad: -- • -- BPM
           </div>
         </div>
 
-        <button id="preview-stage-button" style="background: rgba(212, 175, 55, 0.1); color: #e6c875; border: 1px solid rgba(212, 175, 55, 0.3); border-radius: 6px; padding: 5px 12px; font-size: 0.8rem; font-weight: 600; cursor: pointer; flex-shrink: 0;">
+        <button id="preview-stage-button" style="background: rgba(212, 175, 55, 0.08); color: #e6c875; border: 1px solid rgba(212, 175, 55, 0.25); border-radius: 6px; padding: 4px 10px; font-size: 0.78rem; font-weight: 600; cursor: pointer; flex-shrink: 0;">
           Show ⛶
         </button>
       </div>
 
-      <div style="display: flex; gap: 8px; align-items: center; margin-top: 8px; color: #a8947d; font-size: 0.8rem;">
+      <div style="display: flex; gap: 6px; align-items: center; justify-content: flex-start; margin-bottom: 6px; color: #a8947d; font-size: 0.78rem;">
         <span>Letra:</span>
         <button class="live-ctrl-btn" id="preview-font-minus" style="padding: 2px 8px; background: rgba(255,255,255,0.05); color: #ccc; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; font-size: 0.75rem;">A-</button>
         <button class="live-ctrl-btn" id="preview-font-plus" style="padding: 2px 8px; background: rgba(255,255,255,0.05); color: #ccc; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; font-size: 0.75rem;">A+</button>
         
         <span style="margin-left: 8px;">Scroll:</span>
-        <button class="live-ctrl-btn" id="preview-scroll-toggle" onclick="togglePreviewScroll()" style="padding: 2px 10px; background: rgba(212, 175, 55, 0.15); color: #e6c875; border: 1px solid rgba(212, 175, 55, 0.3); border-radius: 4px; font-size: 0.75rem; font-weight: bold; cursor: pointer;">Play ▶</button>
+        <button class="live-ctrl-btn" id="preview-scroll-toggle" onclick="togglePreviewScroll()" style="padding: 2px 10px; background: rgba(212, 175, 55, 0.12); color: #e6c875; border: 1px solid rgba(212, 175, 55, 0.3); border-radius: 4px; font-size: 0.75rem; font-weight: bold; cursor: pointer;">Play ▶</button>
       </div>
     </div>
 
-    <div id="preview-scroll-container" style="flex-grow: 1; padding: 15px 12px 80px 12px; overflow-y: auto !important; -webkit-overflow-scrolling: touch;">
-      <pre id="preview-lyrics" class="lyrics-render-box" style="white-space: pre-wrap; font-family: 'Playfair Display', serif !important; font-size: 1.15rem; line-height: 1.6; color: #f0e3ce !important; background: transparent !important; border: none; margin: 0; padding: 0;"></pre>
+    <div id="preview-scroll-container" style="flex-grow: 1; overflow-y: auto !important; -webkit-overflow-scrolling: touch; padding-top: 6px; padding-bottom: 80px;">
+      <pre id="preview-lyrics" class="lyrics-render-box" style="white-space: pre-wrap; font-family: 'Playfair Display', serif !important; font-size: 1.15rem; line-height: 1.6; color: #f0e3ce !important; background: transparent !important; border: none; margin: 0; padding: 0; overflow: visible;"></pre>
     </div>
+
   </section>
 
   <script>
@@ -218,6 +223,7 @@
     function togglePreviewScroll() {
       const container = document.getElementById('preview-scroll-container');
       const btn = document.getElementById('preview-scroll-toggle');
+      
       if (previewScrollInterval) {
         clearInterval(previewScrollInterval);
         previewScrollInterval = null;
@@ -238,82 +244,48 @@
     }
   </script>
 
-
-<!-- ========================================================= -->
-<!-- MODO ESCENARIO (NUEVO V2.5)                               -->
-<!-- ========================================================= -->
-
-<div id="screen-stage" class="screen hidden">
-
+  <div id="screen-stage" class="screen hidden">
     <div id="stage-toolbar">
-
-        <button
-            id="stage-exit-button"
-            class="secondary">
-            ← Salir
-        </button>
-
-        <span id="stage-song-counter">
-            1 / 1
-        </span>
-
-        <button
-            id="stage-fullscreen-button">
-            ⛶
-        </button>
-
+      <button id="stage-exit-button" class="secondary">← Salir</button>
+      <span id="stage-song-counter">1 / 1</span>
+      <button id="stage-fullscreen-button">⛶</button>
     </div>
-
-    <div
-        id="stage-lyrics"
-        class="lyrics-container">
-    </div>
-
+    <div id="stage-lyrics" class="lyrics-container"></div>
     <div id="stage-navigation">
-
-        <button id="stage-prev-song">
-            ◀ Anterior
-        </button>
-
-        <button id="stage-next-song">
-            Siguiente ▶
-        </button>
-
+      <button id="stage-prev-song">◀ Anterior</button>
+      <button id="stage-next-song">Siguiente ▶</button>
+    </div>
+  </div>
+    
+  <div id="live-player-mode">
+    <div class="live-player-header">
+      <button class="live-ctrl-btn" onclick="exitLiveShow()">Salir</button>
+      <div class="live-player-meta">
+        <div id="live-meta-title" class="live-player-title"></div>
+        <div id="live-meta-sub" class="live-player-subtitle"></div>
+      </div>
+      <div style="width:70px;"></div>
     </div>
 
-</div>
-  
-<div id="live-player-mode">
-  <div class="live-player-header">
-    <button class="live-ctrl-btn" onclick="exitLiveShow()">
-      Salir
-    </button>
-
-    <div class="live-player-meta">
-      <div id="live-meta-title" class="live-player-title"></div>
-      <div id="live-meta-sub" class="live-player-subtitle"></div>
+    <div id="floating-live-controls" style="position: fixed; top: 70px; right: 15px; z-index: 99999; display: flex; gap: 8px; opacity: 0.55; background: rgba(0,0,0,0.4); padding: 5px 10px; border-radius: 20px; backdrop-filter: blur(4px);">
+      <button class="live-ctrl-btn" onclick="adjustFontSize(-2)" style="min-width: 38px; height: 38px; border-radius: 50%; padding: 0; background: #222; color: #fff; border: 1px solid #666; font-weight: bold;">A-</button>
+      <button class="live-ctrl-btn" onclick="adjustFontSize(2)" style="min-width: 38px; height: 38px; border-radius: 50%; padding: 0; background: #222; color: #fff; border: 1px solid #666; font-weight: bold;">A+</button>
     </div>
 
-    <div style="width:70px;"></div>
+    <div class="live-scroll-view" id="live-scroll-area">
+      <pre class="lyrics-render-box" id="lyrics-render-target"></pre>
+    </div>
+
+    <div class="live-footer-nav">
+      <button class="nav-circle-btn" id="live-prev-btn" onclick="changeLiveSong(-1)">⏮</button>
+      <button class="nav-circle-btn" onclick="toggleAutoscroll()" id="center-play-trigger" style="font-size:1.5rem;">▶</button>
+      <button class="nav-circle-btn next-song" id="live-next-btn" onclick="changeLiveSong(1)">⏭</button>
+    </div>
   </div>
 
-  <div id="floating-live-controls" style="position: fixed; top: 70px; right: 15px; z-index: 99999; display: flex; gap: 8px; opacity: 0.55; background: rgba(0,0,0,0.4); padding: 5px 10px; border-radius: 20px; backdrop-filter: blur(4px);">
-    <button class="live-ctrl-btn" onclick="adjustFontSize(-2)" style="min-width: 38px; height: 38px; border-radius: 50%; padding: 0; background: #222; color: #fff; border: 1px solid #666; font-weight: bold;">A-</button>
-    <button class="live-ctrl-btn" onclick="adjustFontSize(2)" style="min-width: 38px; height: 38px; border-radius: 50%; padding: 0; background: #222; color: #fff; border: 1px solid #666; font-weight: bold;">A+</button>
-  </div>
+  <div class="toast-peña" id="toast-msg"></div>
 
-  <div class="live-scroll-view" id="live-scroll-area">
-    <pre class="lyrics-render-box" id="lyrics-render-target"></pre>
-  </div>
-
-  <div class="live-footer-nav">
-    <button class="nav-circle-btn" id="live-prev-btn" onclick="changeLiveSong(-1)">⏮</button>
-    <button class="nav-circle-btn" onclick="toggleAutoscroll()" id="center-play-trigger" style="font-size:1.5rem;">▶</button>
-    <button class="nav-circle-btn next-song" id="live-next-btn" onclick="changeLiveSong(1)">⏭</button>
-  </div>
 </div>
-
-<div class="toast-peña" id="toast-msg"></div>
 
 <script>
   /* ===================== CONFIGURACIÓN REAL DE FIREBASE ===================== */
@@ -326,7 +298,6 @@
     appId: "1:522780296914:web:0b99e4fa3ec9c780ebcf0b"
   };
 
-  // Inicializar Firebase globalmente tal cual lo tenías
   firebase.initializeApp(firebaseConfig);
 </script>
 
