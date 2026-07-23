@@ -12,7 +12,6 @@ let autoStartScroll = false;
 
 window.enterFullscreen = async function () {
   const el = document.documentElement;
-
   try {
     if (el.requestFullscreen) {
       await el.requestFullscreen();
@@ -44,15 +43,16 @@ window.exitFullscreen = async function () {
 let editingSongId = null;
 let editingSongData = null;
 
-// Control de Vivo
+// Control de Vivo / Ensayo
 let currentLiveIndex = 0;
 let isAutoscrolling = false;
 let autoscrollInterval = null;
 let scrollSpeed = 22; 
 let currentFontSize = 20;
 let triggerNextOnNextScroll = false;
+let currentSong = null;
 
-/* ===================== NAVEGACIÓN ===================== */
+/* ===================== NAVEGACIÓN UNIFICADA ===================== */
 window.showScreen = function(screenId) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   const activeScreen = document.getElementById(screenId);
@@ -63,23 +63,23 @@ window.showScreen = function(screenId) {
   const headerTitle = document.getElementById('main-header-title');
 
   if (screenId === 'screen-main-menu') {
-    backBtn.style.display = 'none';
-    addBtn.style.display = 'none';
-    headerTitle.innerText = "Cancionero";
+    if (backBtn) backBtn.style.display = 'none';
+    if (addBtn) addBtn.style.display = 'none';
+    if (headerTitle) headerTitle.innerText = "Cancionero";
   } else {
-    backBtn.style.display = 'block';
+    if (backBtn) backBtn.style.display = 'block';
     if (screenId === 'screen-cancionero-list') {
-      addBtn.style.display = 'block';
-      headerTitle.innerText = "Cancionero";
+      if (addBtn) addBtn.style.display = 'block';
+      if (headerTitle) headerTitle.innerText = "Cancionero";
     } else if (screenId === 'screen-add-song') {
-      addBtn.style.display = 'none';
-      headerTitle.innerText = "Nueva Canción";
+      if (addBtn) addBtn.style.display = 'none';
+      if (headerTitle) headerTitle.innerText = "Nueva Canción";
     } else if (screenId === 'screen-shows-repertoire') {
-      addBtn.style.display = 'none';
-      headerTitle.innerText = "Shows en Vivo";
+      if (addBtn) addBtn.style.display = 'none';
+      if (headerTitle) headerTitle.innerText = "Shows en Vivo";
     } else if (screenId === 'screen-live-preview') {
-      addBtn.style.display = 'none';
-      headerTitle.innerText = "Modo Ensayo";
+      if (addBtn) addBtn.style.display = 'none';
+      if (headerTitle) headerTitle.innerText = "Modo Ensayo";
     }
   }
 }
@@ -99,133 +99,62 @@ window.navigateBack = function() {
   }
 }
 
-window.openCancioneroView = function() { navigateTo('screen-cancionero-list'); renderSongs(); }
-window.openShowsView = function(){
-
-  navigateTo(
-    "screen-shows-repertoire"
-  );
-
-  renderShowRepertoire();
-
-  renderPrepareShow();
-
+window.openCancioneroView = function() { 
+  navigateTo('screen-cancionero-list'); 
+  renderSongs();
 }
+
+window.openShowsView = function(){
+  navigateTo("screen-shows-repertoire");
+  renderShowRepertoire();
+  renderPrepareShow();
+}
+
 window.renderPrepareShow = function(){
-
-  const target =
-    document.getElementById(
-      "prepare-show-preview"
-    );
-
+  const target = document.getElementById("prepare-show-preview");
   if(!target) return;
 
-  const repertorio =
-    songsArray.filter(song =>
-      showSetlistIds.includes(song.id)
-    );
-
+  const repertorio = songsArray.filter(song => showSetlistIds.includes(song.id));
   if(repertorio.length === 0){
-
-    target.innerHTML = `
-      <div class="empty-peña">
-        No hay canciones seleccionadas.
-      </div>
-    `;
-
+    target.innerHTML = `<div class="empty-peña">No hay canciones seleccionadas.</div>`;
     return;
-
   }
 
-  target.innerHTML = repertorio.map(
-
-    (song,index)=>`
-
+  target.innerHTML = repertorio.map((song,index)=>`
       <div class="song-row">
-
-        <div
-          class="song-avatar"
-          style="background:var(--card-shows);">
-
-          ${index+1}
-
-        </div>
-
+        <div class="song-avatar" style="background:var(--card-shows);">${index+1}</div>
         <div class="song-meta-info">
-
-          <div class="song-row-title">
-
-            ${song.title}
-
-          </div>
-
-          <div class="song-row-sub">
-
-            ${song.key}
-            •
-            ${song.genre.toUpperCase()}
-
-          </div>
-
+          <div class="song-row-title">${song.title}</div>
+          <div class="song-row-sub">${song.key} • ${song.genre.toUpperCase()}</div>
         </div>
-
       </div>
+  `).join("");
 
-    `
+  const fontVal = document.getElementById("prepare-font-size-value");
+  if (fontVal) fontVal.innerText = `${currentFontSize}px`;
 
-  ).join("");
-
-  document.getElementById(
-    "prepare-font-size-value"
-  ).innerText =
-    `${currentFontSize}px`;
-
-  document.getElementById(
-    "prepare-scroll-speed-value"
-  ).innerText =
-    scrollSpeed;
-
+  const speedVal = document.getElementById("prepare-scroll-speed-value");
+  if (speedVal) speedVal.innerText = scrollSpeed;
 }
+
 window.startPreparedShow = async function(){
+  const autoCheckbox = document.getElementById("prepare-autostart-scroll");
+  autoStartScroll = autoCheckbox ? autoCheckbox.checked : false;
 
-  autoStartScroll =
-    document.getElementById(
-      "prepare-autostart-scroll"
-    ).checked;
-
-  if(showSetlistIds.length===0){
-
-    showToast(
-      "Agregá canciones al repertorio."
-    );
-
+  if(showSetlistIds.length === 0){
+    showToast("Agregá canciones al repertorio.");
     return;
-
   }
 
   currentLiveIndex = 0;
-
-  document
-    .getElementById("live-player-mode")
-    .classList.add("active");
-
+  document.getElementById("live-player-mode").classList.add("active");
   await enterFullscreen();
-
   loadLiveSong();
 
   if(autoStartScroll){
-
-    setTimeout(()=>{
-
-      startAutoscroll();
-
-    },500);
-
+    setTimeout(()=>{ startAutoscroll(); }, 500);
   }
-
 }
-
-
 
 /* ===================== CONEXIÓN EN TIEMPO REAL CON CLOUD FIRESTORE ===================== */
 db.collection('Canciones').onSnapshot((snapshot) => {
@@ -251,7 +180,7 @@ db.collection('Canciones').onSnapshot((snapshot) => {
 window.filterByGenre = function(genre) {
   currentGenreFilter = genre.toLowerCase();
   document.querySelectorAll('.tab-item').forEach(btn => {
-    if(btn.onclick.toString().includes(`'${genre}'`)) {
+    if(btn.onclick && btn.onclick.toString().includes(`'${genre}'`)) {
       btn.classList.add('active');
     } else {
       btn.classList.remove('active');
@@ -263,8 +192,9 @@ window.filterByGenre = function(genre) {
 window.renderSongs = function() {
   const target = document.getElementById('songs-render-target');
   if(!target) return;
-  const searchVal = document.getElementById('search-input').value.toLowerCase();
-  
+  const searchInput = document.getElementById('search-input');
+  const searchVal = searchInput ? searchInput.value.toLowerCase() : '';
+
   const filtered = songsArray.filter(s => {
     const matchesGenre = s.genre === currentGenreFilter;
     const matchesSearch = s.title.toLowerCase().includes(searchVal);
@@ -317,7 +247,7 @@ window.renderShowRepertoire = function() {
       <button class="delete-btn" onclick="toggleSongInSetlist('${song.id}')" style="color:var(--text-dorado)">Quitar</button>
     </div>
   `).join('');
-  
+
   renderPrepareShow();
 }
 
@@ -334,7 +264,6 @@ window.toggleSongInSetlist = function(id) {
 
 window.handleFormSubmit = function(e) {
   e.preventDefault();
-  
   const newSong = {
     titulo: document.getElementById('form-title').value,
     estilo: document.getElementById('form-genre').value,
@@ -360,92 +289,37 @@ window.deleteSong = function(id) {
   }
 }
 
-/* ===================== MOTOR SHOW EN VIVO ===================== */
-window.startLiveShow = async function() {
-
-  if (showSetlistIds.length === 0) {
-    showToast("Agregá canciones al show primero");
-    return;
-  }
-
-  await enterFullscreen();
-
-  currentLiveIndex = 0;
-
-  document
-    .getElementById('live-player-mode')
-    .classList.add('active');
-
-  loadLiveSong();
-}
-
-window.exitLiveShow = async function() {
-
-  stopAutoscroll();
-
-  document
-    .getElementById('live-player-mode')
-    .classList.remove('active');
-
-  await exitFullscreen();
-}
-/******************************************************************
- * V2.5
- * MODO ENSAYO
- ******************************************************************/
-
-let currentSong = null;
-
-function openPreviewSong(song) {
+/* ===================== MODO ENSAYO (PREVIEW) ===================== */
+window.openPreviewSong = function(song) {
   if (!song) return;
-
   currentSong = song;
 
-  // 1. Asignar Título
   const titleEl = document.getElementById("preview-song-title");
-  if (titleEl) {
-    titleEl.textContent = song.title || song.titulo || "Sin título";
-  }
+  if (titleEl) titleEl.textContent = song.title || song.titulo || "Sin título";
 
-  // 2. Asignar Metadatos con el Género Real
   const metaEl = document.getElementById("preview-song-meta");
   if (metaEl) {
-    const genero = (song.genre || song.estilo || song.ritmo || "Chacarera").toUpperCase();
+    const genero = (song.genre || song.estilo || "Chacarera").toUpperCase();
     const tono = song.key || song.tonalidad || "--";
     const bpm = song.bpm ? `${song.bpm} BPM` : "-- BPM";
-    
     metaEl.textContent = `${genero} • Tonalidad: ${tono} • ${bpm}`;
   }
 
-  // 3. Asignar la Letra y renderizar acordes
   const lyricsEl = document.getElementById("preview-lyrics");
   if (lyricsEl) {
     const rawLyrics = song.lyrics || song.letra || "Sin letra disponible";
-    // Resalta los acordes entre corchetes [Am] en dorado
     const processedLyrics = rawLyrics.replace(/\[([^\]]+)\]/g, '<span class="chord" style="color: #d4af37; font-weight: bold;">$1</span>');
-    
     lyricsEl.innerHTML = processedLyrics;
   }
 
-  // 4. Mostrar la pantalla de forma directa y limpia
-  const previewScreen = document.getElementById("screen-live-preview");
-  if (previewScreen) {
-    // Ocultar la pantalla actual si hay una abierta
-    document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
-    
-    // Mostrar la vista previa
-    previewScreen.classList.remove("hidden");
-    previewScreen.style.setProperty("display", "flex", "important");
-  } else {
-    navigateTo("screen-live-preview");
-  }
+  // Uso limpio de la navegación
+  navigateTo("screen-live-preview");
 
-  // Resetear scroll arriba al abrir nueva canción
   const container = document.getElementById('preview-scroll-container');
   if (container) container.scrollTop = 0;
 }
 
-window.quickViewSong = async function(id) {
+window.quickViewSong = function(id) {
   const song = songsArray.find(s => s.id === id);
   if (!song) {
     showToast("No se encontró la canción");
@@ -454,44 +328,49 @@ window.quickViewSong = async function(id) {
   openPreviewSong(song);
 }
 
-function closePreview() {
+window.closePreview = function() {
+  stopAutoscroll();
   navigateBack();
 }
 
-async function goToStageMode() {
+window.goToStageMode = async function() {
   if (!currentSong) return;
 
   showSetlistIds = [currentSong.id];
   currentLiveIndex = 0;
 
   await enterFullscreen();
-
-  document
-    .getElementById('live-player-mode')
-    .classList.add('active');
-
+  document.getElementById('live-player-mode').classList.add('active');
   loadLiveSong();
 }
 
+/* ===================== MOTOR SHOW EN VIVO ===================== */
 window.loadLiveSong = function() {
   const selectedSongs = songsArray.filter(s => showSetlistIds.includes(s.id));
   const song = selectedSongs[currentLiveIndex];
   if (!song) return;
 
-  document.getElementById('live-meta-title').innerText = song.title;
-  document.getElementById('live-meta-sub').innerText = `${song.genre.toUpperCase()} • Tonalidad: ${song.key} • ${song.bpm} BPM`;
+  const titleEl = document.getElementById('live-meta-title');
+  if (titleEl) titleEl.innerText = song.title;
+
+  const subEl = document.getElementById('live-meta-sub');
+  if (subEl) subEl.innerText = `${song.genre.toUpperCase()} • Tonalidad: ${song.key} • ${song.bpm} BPM`;
 
   const processedLyrics = song.lyrics.replace(/\[([^\]]+)\]/g, '<span class="chord">$1</span>');
   const target = document.getElementById('lyrics-render-target');
-  target.innerHTML = processedLyrics;
-  target.style.fontSize = `${currentFontSize}px`;
+  if (target) {
+    target.innerHTML = processedLyrics;
+    target.style.fontSize = `${currentFontSize}px`;
+  }
 
-  document.getElementById('live-prev-btn').classList.toggle('disabled', currentLiveIndex === 0);
-  document.getElementById('live-next-btn').classList.toggle('disabled', currentLiveIndex === selectedSongs.length - 1);
+  const prevBtn = document.getElementById('live-prev-btn');
+  if (prevBtn) prevBtn.classList.toggle('disabled', currentLiveIndex === 0);
+
+  const nextBtn = document.getElementById('live-next-btn');
+  if (nextBtn) nextBtn.classList.toggle('disabled', currentLiveIndex === selectedSongs.length - 1);
 
   triggerNextOnNextScroll = false;
   resetLiveScroll();
-  document.getElementById("live-scroll-area").scrollTop = 0;
 }
 
 window.changeLiveSong = function(direction) {
@@ -506,6 +385,13 @@ window.changeLiveSong = function(direction) {
   }
 }
 
+window.exitLiveShow = async function() {
+  stopAutoscroll();
+  document.getElementById('live-player-mode').classList.remove('active');
+  await exitFullscreen();
+}
+
+/* ===================== AUTOSCROLL Y CONTROLES ===================== */
 window.toggleAutoscroll = function() {
   if (isAutoscrolling) { stopAutoscroll(); } else { startAutoscroll(); }
 }
@@ -513,20 +399,24 @@ window.toggleAutoscroll = function() {
 window.startAutoscroll = function() {
   isAutoscrolling = true;
   
-  // Cambiar texto de los botones de forma segura solo si existen en pantalla
-  const scrollBtn = document.getElementById('scroll-play-btn');
+  const scrollBtn = document.getElementById('preview-scroll-toggle');
   if (scrollBtn) scrollBtn.innerText = "Pausa ⏸";
 
   const centerBtn = document.getElementById('center-play-trigger');
   if (centerBtn) centerBtn.innerText = "⏸";
   
-  const container = document.getElementById('live-scroll-area');
+  // Buscar qué contenedor mover (Ensayo o Show)
+  const isShowActive = document.getElementById('live-player-mode').classList.contains('active');
+  const container = isShowActive ? document.getElementById('live-scroll-area') : document.getElementById('preview-scroll-container');
+
   autoscrollInterval = setInterval(() => {
     if (container) {
       container.scrollTop += 1;
       if (container.scrollTop >= (container.scrollHeight - container.clientHeight - 2)) {
         stopAutoscroll();
-        setTimeout(() => { changeLiveSong(1); }, 800);
+        if (isShowActive) {
+          setTimeout(() => { changeLiveSong(1); }, 800);
+        }
       }
     }
   }, scrollSpeed);
@@ -535,8 +425,7 @@ window.startAutoscroll = function() {
 window.stopAutoscroll = function() {
   isAutoscrolling = false;
   
-  // Cambiar texto de los botones de forma segura solo si existen en pantalla
-  const scrollBtn = document.getElementById('scroll-play-btn');
+  const scrollBtn = document.getElementById('preview-scroll-toggle');
   if (scrollBtn) scrollBtn.innerText = "Play ▶";
 
   const centerBtn = document.getElementById('center-play-trigger');
@@ -547,59 +436,22 @@ window.stopAutoscroll = function() {
 
 window.resetLiveScroll = function() {
   stopAutoscroll();
-  document.getElementById('live-scroll-area').scrollTop = 0;
+  const area = document.getElementById('live-scroll-area');
+  if (area) area.scrollTop = 0;
 }
-
-document.getElementById('live-scroll-area').addEventListener('scroll', function(e) {
-  const el = e.target;
-  if (el.scrollTop >= (el.scrollHeight - el.clientHeight - 5)) {
-    if (!isAutoscrolling) { 
-      if (!triggerNextOnNextScroll) triggerNextOnNextScroll = true;
-    }
-  }
-});
-
-document.getElementById('live-scroll-area').addEventListener('wheel', function(e) {
-  if (triggerNextOnNextScroll && e.deltaY > 0) {
-    triggerNextOnNextScroll = false;
-    changeLiveSong(1);
-  }
-});
-
-document.getElementById('live-scroll-area').addEventListener('touchend', function(e) {
-  const el = e.currentTarget;
-  if (el.scrollTop >= (el.scrollHeight - el.clientHeight - 5)) {
-    if(triggerNextOnNextScroll) {
-      triggerNextOnNextScroll = false;
-      changeLiveSong(1);
-    } else {
-      triggerNextOnNextScroll = true;
-    }
-  }
-});
 
 window.adjustFontSize = function(delta) {
   currentFontSize = Math.max(12, Math.min(60, currentFontSize + delta));
   
-  // 1. Cambia el tamaño en el Modo Ensayo (Vista previa)
   const lyricsPreview = document.getElementById("preview-lyrics");
-  if (lyricsPreview) {
-    lyricsPreview.style.fontSize = `${currentFontSize}px`;
-  }
+  if (lyricsPreview) lyricsPreview.style.fontSize = `${currentFontSize}px`;
 
-  // 2. Cambia el tamaño en el Modo Escenario (Pantalla Completa)
   const lyricsStage = document.getElementById("lyrics-render-target");
-  if (lyricsStage) {
-    lyricsStage.style.fontSize = `${currentFontSize}px`;
-  }
+  if (lyricsStage) lyricsStage.style.fontSize = `${currentFontSize}px`;
 
-  // 3. Indicador de tamaño en la configuración previa
   const label = document.getElementById("prepare-font-size-value");
-  if (label) {
-    label.innerText = `${currentFontSize} px`;
-  }
+  if (label) label.innerText = `${currentFontSize} px`;
 }
-
 
 window.adjustScrollSpeed = function(delta){
   scrollSpeed = Math.max(5, scrollSpeed - (delta * 3));
@@ -608,9 +460,7 @@ window.adjustScrollSpeed = function(delta){
     startAutoscroll();
   }
   const label = document.getElementById("prepare-scroll-speed-value");
-  if(label){
-    label.innerText = scrollSpeed;
-  }
+  if(label) label.innerText = scrollSpeed;
 }
 
 window.editSong = function(id){
@@ -642,25 +492,32 @@ window.showToast = function(msg) {
   setTimeout(() => { toast.style.display = 'none'; }, 2500);
 }
 
-// Conexión de botones del Modo Ensayo (v2.5.1)
-document.getElementById("btnPreviewBack")?.addEventListener("click", function() {
-  if (typeof closePreview === "function") closePreview();
-  else navigateBack();
-});
+// Event Listeners para scroll táctil / mouse en Vivo
+const liveScrollArea = document.getElementById('live-scroll-area');
+if (liveScrollArea) {
+  liveScrollArea.addEventListener('scroll', function(e) {
+    const el = e.target;
+    if (el.scrollTop >= (el.scrollHeight - el.clientHeight - 5)) {
+      if (!isAutoscrolling && !triggerNextOnNextScroll) triggerNextOnNextScroll = true;
+    }
+  });
 
-document.getElementById("preview-font-minus")?.addEventListener("click", function() {
-  adjustFontSize(-2);
-});
+  liveScrollArea.addEventListener('wheel', function(e) {
+    if (triggerNextOnNextScroll && e.deltaY > 0) {
+      triggerNextOnNextScroll = false;
+      changeLiveSong(1);
+    }
+  });
 
-document.getElementById("preview-font-plus")?.addEventListener("click", function() {
-  adjustFontSize(2);
-});
-
-document.getElementById("preview-scroll-toggle")?.addEventListener("click", function() {
-  if (typeof toggleAutoscroll === "function") toggleAutoscroll();
-});
-
-document.getElementById("preview-stage-button")?.addEventListener("click", function() {
-  if (typeof goToStageMode === "function") goToStageMode();
-});
-
+  liveScrollArea.addEventListener('touchend', function(e) {
+    const el = e.currentTarget;
+    if (el.scrollTop >= (el.scrollHeight - el.clientHeight - 5)) {
+      if(triggerNextOnNextScroll) {
+        triggerNextOnNextScroll = false;
+        changeLiveSong(1);
+      } else {
+        triggerNextOnNextScroll = true;
+      }
+    }
+  });
+}
