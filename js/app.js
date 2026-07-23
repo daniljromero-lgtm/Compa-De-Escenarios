@@ -334,14 +334,27 @@ window.closePreview = function() {
 }
 
 window.goToStageMode = async function() {
-  if (!currentSong) return;
+    if (!currentSong) return;
 
-  showSetlistIds = [currentSong.id];
-  currentLiveIndex = 0;
+    // Ocultar la vista previa
+    const preview = document.getElementById("screen-live-preview");
+    if (preview) {
+        preview.classList.remove("active");
+    }
 
-  await enterFullscreen();
-  document.getElementById('live-player-mode').classList.add('active');
-  loadLiveSong();
+    // Preparar el show
+    showSetlistIds = [currentSong.id];
+    currentLiveIndex = 0;
+
+    // Mostrar el reproductor
+    const player = document.getElementById("live-player-mode");
+    if (player) {
+        player.classList.add("active");
+    }
+
+    await enterFullscreen();
+
+    loadLiveSong();
 }
 
 /* ===================== MOTOR SHOW EN VIVO ===================== */
