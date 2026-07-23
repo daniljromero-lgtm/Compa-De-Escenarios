@@ -173,14 +173,14 @@
     <button class="start-show-action-btn" onclick="startPreparedShow()" style="margin-top: 30px; background: var(--text-dorado); color: #000; font-weight: bold;">▶ COMENZAR SHOW</button>
   </div>
   </section>
-     <section class="screen hidden" id="screen-live-preview">
-    <div style="position: sticky; top: 0; background: #19110b; z-index: 10; padding: 10px 12px 6px 12px; border-bottom: 1px solid rgba(212, 175, 55, 0.15);">
+    <section class="screen hidden" id="screen-live-preview" style="position: fixed !important; top: 0 !important; left: 0 !important; width: 100vw !important; height: 100vh !important; z-index: 99999 !important; background: #19110b !important; display: flex; flex-direction: column; box-sizing: border-box; overflow: hidden;">
+    
+    <div style="flex-shrink: 0; background: #19110b; z-index: 10; padding: 10px 12px 6px 12px; border-bottom: 1px solid rgba(212, 175, 55, 0.15);">
       
       <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
-        <button class="secondary" id="btnPreviewBack" onclick="document.getElementById('screen-live-preview').classList.add('hidden'); if(typeof navigateTo==='function') navigateTo('screen-song-list');" style="padding: 5px 12px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.4); color: #d1d1d1; font-size: 0.8rem; cursor: pointer; flex-shrink: 0;">
+        <button class="secondary" id="btnPreviewBack" onclick="document.getElementById('screen-live-preview').classList.add('hidden'); document.getElementById('screen-live-preview').style.setProperty('display', 'none', 'important'); if(typeof navigateTo==='function') navigateTo('screen-song-list');" style="padding: 5px 12px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.4); color: #d1d1d1; font-size: 0.8rem; cursor: pointer; flex-shrink: 0;">
           Salir
         </button>
-
 
         <div style="text-align: center; flex-grow: 1; min-width: 0; overflow: hidden;">
           <h2 id="preview-song-title" style="color: #d4af37 !important; font-family: 'Cinzel', serif !important; font-size: 1.05rem; font-weight: 600 !important; letter-spacing: 1px; margin: 0; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
@@ -206,7 +206,7 @@
       </div>
     </div>
 
-    <div id="preview-scroll-container" style="padding: 15px 12px 80px 12px; overflow-y: auto; height: calc(100vh - 100px); -webkit-overflow-scrolling: touch;">
+    <div id="preview-scroll-container" style="flex-grow: 1; padding: 15px 12px 80px 12px; overflow-y: auto !important; -webkit-overflow-scrolling: touch;">
       <pre id="preview-lyrics" class="lyrics-render-box" style="white-space: pre-wrap; font-family: 'Playfair Display', serif !important; font-size: 1.15rem; line-height: 1.6; color: #f0e3ce !important; background: transparent !important; border: none; margin: 0; padding: 0;"></pre>
     </div>
   </section>
@@ -237,6 +237,7 @@
       }
     }
   </script>
+
 
 <!-- ========================================================= -->
 <!-- MODO ESCENARIO (NUEVO V2.5)                               -->
