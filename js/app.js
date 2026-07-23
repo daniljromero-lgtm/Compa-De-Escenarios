@@ -399,9 +399,22 @@ window.changeLiveSong = function(direction) {
 }
 
 window.exitLiveShow = async function() {
-  stopAutoscroll();
-  document.getElementById('live-player-mode').classList.remove('active');
-  await exitFullscreen();
+
+    stopAutoscroll();
+
+    const player = document.getElementById("live-player-mode");
+    if (player) {
+        player.classList.remove("active");
+    }
+
+    await exitFullscreen();
+
+    // Volver a mostrar la vista previa
+    const preview = document.getElementById("screen-live-preview");
+    if (preview) {
+        preview.classList.add("active");
+    }
+
 }
 
 /* ===================== AUTOSCROLL Y CONTROLES ===================== */
