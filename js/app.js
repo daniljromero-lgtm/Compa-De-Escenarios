@@ -1,3 +1,13 @@
+/* ==========================================================
+   CANCIONERO - COMPAÑERO DE ESCENARIO
+   Versión 2.5 STABLE
+   Archivo principal de lógica (app.js)
+========================================================== */
+
+/* ==========================================================
+   FIREBASE
+========================================================== */
+
 // Inicializar Cloud Firestore (Usando el objeto expuesto globalmente)
 const db = firebase.firestore();
 
