@@ -177,12 +177,12 @@
     </div>
   </section>
 
-    <section class="screen hidden" id="screen-live-preview" style="background: #19110b !important; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 99999; display: flex; flex-direction: column; padding: 10px 12px 0 12px; box-sizing: border-box; overflow: hidden;">
+      <section class="screen hidden" id="screen-live-preview" style="background: #19110b !important; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 99999; flex-direction: column; padding: 10px 12px 0 12px; box-sizing: border-box; overflow: hidden;">
     
     <div style="flex-shrink: 0; background: #19110b; z-index: 10; padding-bottom: 4px;">
       <div style="display: flex; align-items: center; justify-content: space-between; padding-bottom: 8px; margin-bottom: 8px; border-bottom: 1px solid rgba(212, 175, 55, 0.15); gap: 8px;">
         
-        <button class="secondary" id="btnPreviewBack" onclick="closePreviewAndBack()" style="padding: 6px 14px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.4); color: #d1d1d1; font-size: 0.85rem; font-weight: 600; cursor: pointer; flex-shrink: 0;">
+        <button class="secondary" id="btnPreviewBack" onclick="forceClosePreview()" style="padding: 6px 14px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.4); color: #d1d1d1; font-size: 0.85rem; font-weight: 600; cursor: pointer; flex-shrink: 0;">
           ← Salir
         </button>
 
@@ -195,7 +195,7 @@
           </div>
         </div>
 
-        <button id="preview-stage-button" onclick="startLiveFromPreview()" style="background: rgba(212, 175, 55, 0.2); color: #e6c875; border: 1px solid rgba(212, 175, 55, 0.4); border-radius: 6px; padding: 6px 12px; font-size: 0.85rem; font-weight:bold; cursor: pointer; flex-shrink: 0;">
+        <button id="preview-stage-button" onclick="forceOpenLiveShow()" style="background: rgba(212, 175, 55, 0.2); color: #e6c875; border: 1px solid rgba(212, 175, 55, 0.4); border-radius: 6px; padding: 6px 12px; font-size: 0.85rem; font-weight:bold; cursor: pointer; flex-shrink: 0;">
           Show ⛶
         </button>
       </div>
@@ -220,6 +220,7 @@
     if (typeof previewScrollInterval === 'undefined') {
       var previewScrollInterval = null;
     }
+
     function togglePreviewScroll() {
       const container = document.getElementById('preview-scroll-container');
       const btn = document.getElementById('preview-scroll-toggle');
@@ -243,29 +244,50 @@
       }
     }
 
-    function closePreviewAndBack() {
+    // CIERRA Y OCULTA POR COMPLETO LA VISTA PREVIA
+    function forceClosePreview() {
       const preview = document.getElementById('screen-live-preview');
       if (preview) {
         preview.classList.add('hidden');
+        preview.style.display = 'none';
       }
       if (typeof navigateBack === 'function') {
         navigateBack();
-      } else if (typeof navigateTo === 'function') {
-        navigateTo('screen-cancionero-list');
       }
     }
 
-    function startLiveFromPreview() {
-      if (typeof currentSong !== 'undefined' && currentSong) {
-        document.getElementById('screen-live-preview').classList.add('hidden');
-        if (typeof startLiveShow === 'function') {
-          startLiveShow([currentSong], 0);
-        } else if (typeof openStageMode === 'function') {
-          openStageMode(currentSong);
-        }
+    // ABRE EL MODO ESCENARIO / REPRODUCTOR EN VIVO CON FONDO NEGRO
+    function forceOpenLiveShow() {
+      // 1. Oculta la vista previa
+      forceClosePreview();
+
+      // 2. Transfiere el título y la letra al reproductor del Show (#live-player-mode)
+      const title = document.getElementById('preview-song-title')?.innerText || '';
+      const meta = document.getElementById('preview-song-meta')?.innerText || '';
+      const lyrics = document.getElementById('preview-lyrics')?.innerHTML || '';
+
+      const liveTitle = document.getElementById('live-meta-title');
+      const liveSub = document.getElementById('live-meta-sub');
+      const liveLyrics = document.getElementById('lyrics-render-target');
+
+      if (liveTitle) liveTitle.innerText = title;
+      if (liveSub) liveSub.innerText = meta;
+      if (liveLyrics) liveLyrics.innerHTML = lyrics;
+
+      // 3. Activa el reproductor flotante en vivo
+      const player = document.getElementById('live-player-mode');
+      if (player) {
+        player.classList.add('active');
+        player.style.display = 'flex';
+      }
+
+      // Si existe la función del sistema de app.js, también la llama por compatibilidad
+      if (typeof startLiveShow === 'function' && typeof currentSong !== 'undefined' && currentSong) {
+        startLiveShow([currentSong], 0);
       }
     }
   </script>
+  
 
   <div id="screen-stage" class="screen hidden">
     <div id="stage-toolbar">
