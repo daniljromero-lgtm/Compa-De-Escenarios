@@ -20,7 +20,9 @@ let showSetlistIds = [];
 let screenHistory = ['screen-main-menu'];
 let autoStartScroll = false;
 
-/* ===================== PANTALLA COMPLETA ===================== */
+/* ==========================================================
+   PANTALLA COMPLETA (FULLSCREEN)
+========================================================== */
 
 window.enterFullscreen = async function () {
   const el = document.documentElement;
