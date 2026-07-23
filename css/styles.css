@@ -35,6 +35,7 @@
 html, body {
   height: 100%;
   overflow: hidden;
+  overscroll-behavior: none;
   background: var(--bg-main);
   color: var(--text-blanco);
   font-family: var(--font-ui);
@@ -44,6 +45,7 @@ html, body {
 #app {
   display: flex;
   flex-direction: column;
+  min-height: 100dvh;
   height: 100dvh;
   position: relative;
 }
@@ -99,6 +101,8 @@ html, body {
   flex: 1;
   flex-direction: column;
   overflow: hidden;
+  transition:.18s;
+  transition: opacity 0.18s ease;
 }
 .screen.active { display: flex; }
 
