@@ -172,7 +172,9 @@ window.startPreparedShow = async function(){
   }
 }
 
-/* ===================== CONEXIÓN EN TIEMPO REAL CON CLOUD FIRESTORE ===================== */
+/* ==========================================================
+   SINCRONIZACIÓN CON FIRESTORE
+========================================================== */
 db.collection('Canciones').onSnapshot((snapshot) => {
   songsArray = [];
   snapshot.forEach((doc) => {
@@ -192,7 +194,9 @@ db.collection('Canciones').onSnapshot((snapshot) => {
   console.error("Error cargando Firestore: ", error);
 });
 
-/* ===================== RENDERS INTERFAZ ===================== */
+/* ==========================================================
+   RENDERIZADO DE LA INTERFAZ
+========================================================== */
 window.filterByGenre = function(genre) {
   currentGenreFilter = genre.toLowerCase();
   document.querySelectorAll('.tab-item').forEach(btn => {
@@ -305,7 +309,9 @@ window.deleteSong = function(id) {
   }
 }
 
-/* ===================== MODO ENSAYO (PREVIEW) ===================== */
+/* ==========================================================
+   MODO ENSAYO (VISTA PREVIA)
+========================================================== */
 window.openPreviewSong = function(song) {
   if (!song) return;
   currentSong = song;
@@ -383,7 +389,9 @@ window.goToStageMode = async function() {
     loadLiveSong();
 }
 
-/* ===================== MOTOR SHOW EN VIVO ===================== */
+/* ==========================================================
+   MODO ESCENARIO (SHOW EN VIVO)
+========================================================== */
 window.loadLiveSong = function() {
   const selectedSongs = songsArray.filter(s => showSetlistIds.includes(s.id));
   const song = selectedSongs[currentLiveIndex];
@@ -443,7 +451,9 @@ window.exitLiveShow = async function() {
 
 }
 
-/* ===================== AUTOSCROLL Y CONTROLES ===================== */
+/* ==========================================================
+   AUTOSCROLL Y CONTROLES DE LECTURA
+========================================================== */
 window.toggleAutoscroll = function() {
   if (isAutoscrolling) { stopAutoscroll(); } else { startAutoscroll(); }
 }
@@ -515,6 +525,9 @@ window.adjustScrollSpeed = function(delta){
   if(label) label.innerText = scrollSpeed;
 }
 
+/* ==========================================================
+   EDICIÓN DE CANCIONES
+========================================================== */
 window.editSong = function(id){
   editingSongId = id;
   editingSongData = songsArray.find(s => s.id === id);
@@ -536,6 +549,9 @@ window.editSong = function(id){
   navigateTo("screen-add-song");
 }
 
+/* ==========================================================
+   UTILIDADES
+========================================================== */
 window.showToast = function(msg) {
   const toast = document.getElementById('toast-msg');
   if(!toast) return;
@@ -544,6 +560,9 @@ window.showToast = function(msg) {
   setTimeout(() => { toast.style.display = 'none'; }, 2500);
 }
 
+/* ==========================================================
+   EVENTOS DEL REPRODUCTOR EN VIVO
+========================================================== */
 // Event Listeners para scroll táctil / mouse en Vivo
 const liveScrollArea = document.getElementById('live-scroll-area');
 if (liveScrollArea) {
