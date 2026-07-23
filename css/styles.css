@@ -1,3 +1,17 @@
+/* ==========================================================
+   Cancionero - Compañero de Escenario
+
+   Archivo:
+   styles.css
+
+   Versión:
+   2.5 STABLE
+
+   Última revisión:
+   Julio 2026
+
+========================================================== */
+
 /* ===================== PALETA DE COLORES APK ORIGINAL ===================== */
 :root {
   --bg-main: #1e110a;       
@@ -34,7 +48,9 @@ html, body {
   position: relative;
 }
 
-/* HEADER */
+/* ==========================================================
+   HEADER
+========================================================== */
 .header {
   display: flex;
   align-items: center;
