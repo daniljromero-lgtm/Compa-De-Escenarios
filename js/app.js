@@ -66,7 +66,9 @@ let currentFontSize = 20;
 let triggerNextOnNextScroll = false;
 let currentSong = null;
 
-/* ===================== NAVEGACIÓN UNIFICADA ===================== */
+/* ==========================================================
+   NAVEGACIÓN ENTRE PANTALLAS
+========================================================== */
 window.showScreen = function(screenId) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   const activeScreen = document.getElementById(screenId);
