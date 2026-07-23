@@ -329,8 +329,18 @@ window.quickViewSong = function(id) {
 }
 
 window.closePreview = function() {
-  stopAutoscroll();
-  navigateBack();
+
+    stopAutoscroll();
+
+    const container = document.getElementById("preview-scroll-container");
+    if (container) {
+        container.scrollTop = 0;
+    }
+
+    currentSong = null;
+
+    navigateBack();
+
 }
 
 window.goToStageMode = async function() {
