@@ -19,14 +19,21 @@
 <style>
   /* Regla global para ocultar cualquier pantalla inactiva */
   .screen {
-    display: none;
-  }
-  .screen.active {
-    display: block;
-  }
-  #screen-live-preview.active {
-    display: flex !important;
-  }
+  display: none;
+}
+
+.screen.active {
+  display: flex;
+  flex-direction: column;
+}
+
+#screen-main-menu.active {
+  display: block;
+}
+
+#screen-live-preview.active {
+  display: flex;
+}
 </style>
 </head>
 <body>
