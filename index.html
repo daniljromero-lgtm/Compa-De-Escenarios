@@ -177,9 +177,10 @@
     <div style="position: sticky; top: 0; background: #19110b; z-index: 10; padding: 10px 12px 6px 12px; border-bottom: 1px solid rgba(212, 175, 55, 0.15);">
       
       <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
-        <button class="secondary" id="btnPreviewBack" onclick="navigateTo('screen-song-list')" style="padding: 5px 12px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.4); color: #d1d1d1; font-size: 0.8rem; cursor: pointer; flex-shrink: 0;">
+        <button class="secondary" id="btnPreviewBack" onclick="document.getElementById('screen-live-preview').classList.add('hidden'); if(typeof navigateTo==='function') navigateTo('screen-song-list');" style="padding: 5px 12px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.4); color: #d1d1d1; font-size: 0.8rem; cursor: pointer; flex-shrink: 0;">
           Salir
         </button>
+
 
         <div style="text-align: center; flex-grow: 1; min-width: 0; overflow: hidden;">
           <h2 id="preview-song-title" style="color: #d4af37 !important; font-family: 'Cinzel', serif !important; font-size: 1.05rem; font-weight: 600 !important; letter-spacing: 1px; margin: 0; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
