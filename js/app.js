@@ -29,8 +29,13 @@ const db = firebase.firestore();
    ESTADO GLOBAL DE LA APLICACIÓN
 ========================================================== */
 let songsArray = [];
+let repertoiresArray = [];
+
 let currentGenreFilter = 'chacarera';
 let showSetlistIds = [];
+
+let currentRepertoireId = null;
+
 let screenHistory = ['screen-main-menu'];
 let autoStartScroll = false;
 
@@ -206,6 +211,32 @@ db.collection('Canciones').onSnapshot((snapshot) => {
   renderShowRepertoire();
 }, (error) => {
   console.error("Error cargando Firestore: ", error);
+});
+
+/* ==========================================================
+   REPERTORIOS
+========================================================== */
+
+db.collection("Repertorios").onSnapshot((snapshot) => {
+
+    repertoiresArray = [];
+
+    snapshot.forEach((doc) => {
+
+        const data = doc.data();
+
+        repertoiresArray.push({
+
+            id: doc.id,
+            nombre: data.nombre || "Sin nombre",
+            canciones: data.canciones || []
+
+        });
+
+    });
+
+    renderRepertoires();
+
 });
 
 /* ==========================================================
@@ -561,6 +592,118 @@ window.editSong = function(id){
   document.getElementById("song-submit-btn").innerText = "Guardar cambios";
   
   navigateTo("screen-add-song");
+}
+
+/* ==========================================================
+   REPERTORIOS
+========================================================== */
+
+window.createNewRepertoire = function () {
+
+    const nombre = prompt("Nombre del repertorio");
+
+    if (!nombre) return;
+
+    db.collection("Repertorios").add({
+
+        nombre: nombre,
+        canciones: []
+
+    })
+
+    .then(() => {
+
+        showToast("Repertorio creado");
+
+    })
+
+    .catch(err => {
+
+        showToast(err.message);
+
+    });
+
+}
+
+
+window.renderRepertoires = function () {
+
+    const target = document.getElementById("repertoires-render-target");
+
+    if (!target) return;
+
+    if (repertoiresArray.length === 0) {
+
+        target.innerHTML = `
+            <div class="empty-peña">
+
+                Todavía no hay repertorios.
+
+            </div>
+        `;
+
+        return;
+
+    }
+
+    target.innerHTML = repertoiresArray.map(rep => `
+
+        <div class="song-row">
+
+            <div class="song-avatar"
+                 style="background:var(--card-shows);">
+
+                 📁
+
+            </div>
+
+            <div class="song-meta-info">
+
+                <div class="song-row-title">
+
+                    ${rep.nombre}
+
+                </div>
+
+                <div class="song-row-sub">
+
+                    ${rep.canciones.length} canciones
+
+                </div>
+
+            </div>
+
+            <button
+                class="delete-btn"
+                onclick="deleteRepertoire('${rep.id}')">
+
+                🗑️
+
+            </button>
+
+        </div>
+
+    `).join("");
+
+}
+
+
+window.deleteRepertoire = function(id){
+
+    if(!confirm("¿Eliminar este repertorio?")) return;
+
+    db.collection("Repertorios")
+
+        .doc(id)
+
+        .delete()
+
+        .then(()=>{
+
+            showToast("Repertorio eliminado");
+
+        });
+
 }
 
 /* ==========================================================
