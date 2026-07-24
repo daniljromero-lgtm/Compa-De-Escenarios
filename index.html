@@ -77,13 +77,13 @@
       </div>
 
       <div class="menu-card shows-btn" onclick="openShowsView()">
-        <span class="menu-card-icon">🎤</span>
+        <span class="menu-card-icon">📁</span>
         <div class="menu-card-text">
-          <h2 class="menu-card-title">Shows en vivo</h2>
-          <p class="menu-card-desc">Armá el repertorio para tu próximo show</p>
-        </div>
-        <span class="menu-card-arrow">&gt;</span>
-      </div>
+         <h2 class="menu-card-title">Repertorios</h2>
+         <p class="menu-card-desc">Administrá todos tus repertorios</p>
+       </div>
+       <span class="menu-card-arrow">></span>
+     </div>
 
       <p class="footer-text">Folklore Argentino 🌿</p>
     </div>
@@ -150,19 +150,27 @@
     </div>
   </section>
 
-  <section class="screen" id="screen-shows-repertoire">
+ <section class="screen" id="screen-shows-repertoire">
+
     <div class="scroll-area">
-      <button class="start-show-action-btn" onclick="navigateTo('screen-prepare-show')">
-        ⚙️ Preparar Show
-      </button>
 
-      <h3 class="peña-label" style="margin-bottom:12px;">
-        Lista de temas seleccionados:
-      </h3>
+        <button
+            class="start-show-action-btn"
+            onclick="createNewRepertoire()">
 
-      <div id="show-repertoire-target"></div>
+            ➕ Nuevo repertorio
+
+        </button>
+
+        <div
+            id="repertoires-render-target"
+            style="margin-top:20px;">
+
+        </div>
+
     </div>
-  </section>
+
+</section>
 
   <section class="screen" id="screen-prepare-show">
     <div class="scroll-area">
