@@ -35,6 +35,7 @@ let currentGenreFilter = 'chacarera';
 let showSetlistIds = [];
 
 let currentRepertoireId = null;
+let selectedSongForRepertoire = null;
 
 let screenHistory = ['screen-main-menu'];
 let autoStartScroll = false;
@@ -281,7 +282,7 @@ window.renderSongs = function() {
           <div class="song-row-sub">${song.key} • ${song.bpm} BPM</div>
         </div>
         <div class="action-icons-wrap">
-          <button class="add-to-show-btn ${isAdded ? 'added' : ''}" onclick="toggleSongInSetlist('${song.id}')">
+          <button class="add-to-show-btn ${isAdded ? 'added' : ''}" onclick="openRepertoireModal('${song.id}')">
             ${isAdded ? '✓ Show' : '+ Show'}
           </button>
           <button class="delete-btn" style="color:#4da3ff" onclick="editSong('${song.id}')">✏️</button>
@@ -703,6 +704,90 @@ window.deleteRepertoire = function(id){
             showToast("Repertorio eliminado");
 
         });
+
+}
+
+/* ==========================================================
+   MODAL REPERTORIOS
+========================================================== */
+
+window.openRepertoireModal = function(songId){
+
+    selectedSongForRepertoire = songId;
+
+    const modal = document.getElementById("repertoire-modal");
+    const list = document.getElementById("modal-repertoire-list");
+
+    if(!modal || !list) return;
+
+    if(repertoiresArray.length === 0){
+
+        list.innerHTML = `
+            <div class="empty-peña">
+                No hay repertorios creados.
+            </div>
+        `;
+
+    }else{
+
+        list.innerHTML = repertoiresArray.map(rep=>`
+
+            <div class="modal-repertoire-row"
+                 onclick="selectRepertoire('${rep.id}')">
+
+                <div class="modal-folder">
+                    📁
+                </div>
+
+                <div>
+
+                    <div class="modal-name">
+
+                        ${rep.nombre}
+
+                    </div>
+
+                    <div class="modal-count">
+
+                        ${rep.canciones.length} canciones
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        `).join("");
+
+    }
+
+    modal.style.display="flex";
+
+}
+
+
+window.closeRepertoireModal = function(){
+
+    const modal=document.getElementById("repertoire-modal");
+
+    if(modal){
+
+        modal.style.display="none";
+
+    }
+
+}
+
+
+window.selectRepertoire=function(id){
+
+    const rep=repertoiresArray.find(r=>r.id===id);
+
+    if(!rep) return;
+
+    showToast("Próximo paso: agregar a \""+rep.nombre+"\"");
+
+    closeRepertoireModal();
 
 }
 
