@@ -282,9 +282,12 @@ window.renderSongs = function() {
           <div class="song-row-sub">${song.key} • ${song.bpm} BPM</div>
         </div>
         <div class="action-icons-wrap">
-          <button class="add-to-show-btn ${isAdded ? 'added' : ''}" onclick="openRepertoireModal('${song.id}')">
-            ${isAdded ? '✓ Show' : '+ Show'}
-          </button>
+          <button class="add-to-show-btn"
+        onclick="openRepertoireModal('${song.id}')">
+
+    📁 Repertorio
+
+</button>
           <button class="delete-btn" style="color:#4da3ff" onclick="editSong('${song.id}')">✏️</button>
           <button class="delete-btn" onclick="deleteSong('${song.id}')">🗑️</button>
         </div>
