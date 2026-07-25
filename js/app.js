@@ -158,7 +158,8 @@ window.renderPrepareShow = function(){
   }
 
   target.innerHTML = repertorio.map((song,index)=>`
-      <div class="song-row">
+      <div class="song-row"
+     onclick="openRepertoire('${rep.id}')">
         <div class="song-avatar" style="background:var(--card-shows);">${index+1}</div>
         <div class="song-meta-info">
           <div class="song-row-title">${song.title}</div>
