@@ -733,34 +733,54 @@ window.openRepertoireModal = function(songId){
 
     }else{
 
-        list.innerHTML = repertoiresArray.map(rep=>`
+        list.innerHTML = repertoiresArray.map(rep=>{
 
-            <div class="modal-repertoire-row"
-                 onclick="selectRepertoire('${rep.id}')">
+    const alreadyAdded =
+        rep.canciones.includes(selectedSongForRepertoire);
 
-                <div class="modal-folder">
-                    📁
+    return `
+
+        <div class="modal-repertoire-row"
+             onclick="selectRepertoire('${rep.id}')">
+
+            <div class="modal-folder">
+
+                📁
+
+            </div>
+
+            <div style="flex:1;">
+
+                <div class="modal-name">
+
+                    ${rep.nombre}
+
                 </div>
 
-                <div>
+                <div class="modal-count">
 
-                    <div class="modal-name">
-
-                        ${rep.nombre}
-
-                    </div>
-
-                    <div class="modal-count">
-
-                        ${rep.canciones.length} canciones
-
-                    </div>
+                    ${rep.canciones.length} canciones
 
                 </div>
 
             </div>
 
-        `).join("");
+            ${
+                alreadyAdded
+                ? `<div style="
+                        color:#58d68d;
+                        font-weight:bold;
+                        font-size:13px;">
+                        ✔
+                   </div>`
+                : ""
+            }
+
+        </div>
+
+    `;
+
+}).join("");
 
     }
 
