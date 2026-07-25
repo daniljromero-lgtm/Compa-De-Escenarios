@@ -36,6 +36,7 @@ let showSetlistIds = [];
 
 let currentRepertoireId = null;
 let selectedSongForRepertoire = null;
+let currentRepertoire = null;
 
 let screenHistory = ['screen-main-menu'];
 let autoStartScroll = false;
