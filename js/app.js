@@ -819,15 +819,16 @@ window.selectRepertoire = function(id){
 
     }
 
-    const nuevasCanciones = [...rep.canciones, selectedSongForRepertoire];
 
     db.collection("Repertorios")
-        .doc(id)
-        .update({
+    .doc(id)
+    .update({
 
-            canciones: nuevasCanciones
+        canciones: firebase.firestore.FieldValue.arrayUnion(
+            selectedSongForRepertoire
+        )
 
-        })
+    })
         .then(()=>{
 
             showToast("Canción agregada al repertorio.");
