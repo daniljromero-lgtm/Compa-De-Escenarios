@@ -692,6 +692,21 @@ window.renderRepertoires = function () {
 
 }
 
+window.openRepertoire = function(id){
+
+    const rep = repertoiresArray.find(r => r.id === id);
+
+    if(!rep) return;
+
+    currentRepertoireId = id;
+    currentRepertoire = rep;
+
+    document.getElementById("repertoire-detail-title").innerText =
+        "📁 " + rep.nombre;
+
+    navigateTo("screen-repertoire-detail");
+
+}
 
 window.deleteRepertoire = function(id){
 
