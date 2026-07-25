@@ -655,43 +655,43 @@ window.renderRepertoires = function () {
 
     target.innerHTML = repertoiresArray.map(rep => `
 
-        <div class="song-row"
-     onclick="openRepertoire('${rep.id}')">
+    <div class="song-row"
+         onclick="openRepertoire('${rep.id}')">
 
-            <div class="song-avatar"
-                 style="background:var(--card-shows);">
+        <div class="song-avatar"
+             style="background:var(--card-shows);">
 
-                 📁
-
-            </div>
-
-            <div class="song-meta-info">
-
-                <div class="song-row-title">
-
-                    ${rep.nombre}
-
-                </div>
-
-                <div class="song-row-sub">
-
-                    ${rep.canciones.length} canciones
-
-                </div>
-
-            </div>
-
-            <button
-                class="delete-btn"
-                onclick="deleteRepertoire('${rep.id}')">
-
-                🗑️
-
-            </button>
+             📁
 
         </div>
 
-    `).join("");
+        <div class="song-meta-info">
+
+            <div class="song-row-title">
+
+                ${rep.nombre}
+
+            </div>
+
+            <div class="song-row-sub">
+
+                ${rep.canciones.length} canciones
+
+            </div>
+
+        </div>
+
+        <button
+            class="delete-btn"
+            onclick="event.stopPropagation(); deleteRepertoire('${rep.id}')">
+
+            🗑️
+
+        </button>
+
+    </div>
+
+`).join("");
 
 }
 
