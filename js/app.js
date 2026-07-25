@@ -802,15 +802,44 @@ window.closeRepertoireModal = function(){
 }
 
 
-window.selectRepertoire=function(id){
+window.selectRepertoire = function(id){
 
-    const rep=repertoiresArray.find(r=>r.id===id);
+    const rep = repertoiresArray.find(r => r.id === id);
 
     if(!rep) return;
 
-    showToast("Próximo paso: agregar a \""+rep.nombre+"\"");
+    // Evitar duplicados
+    if(rep.canciones.includes(selectedSongForRepertoire)){
 
-    closeRepertoireModal();
+        showToast("La canción ya pertenece a este repertorio.");
+
+        closeRepertoireModal();
+
+        return;
+
+    }
+
+    const nuevasCanciones = [...rep.canciones, selectedSongForRepertoire];
+
+    db.collection("Repertorios")
+        .doc(id)
+        .update({
+
+            canciones: nuevasCanciones
+
+        })
+        .then(()=>{
+
+            showToast("Canción agregada al repertorio.");
+
+            closeRepertoireModal();
+
+        })
+        .catch(err=>{
+
+            showToast("Error: " + err.message);
+
+        });
 
 }
 
