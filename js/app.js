@@ -158,15 +158,16 @@ window.renderPrepareShow = function(){
   }
 
   target.innerHTML = repertorio.map((song,index)=>`
-      <div class="song-row"
-     onclick="openRepertoire('${rep.id}')">
+    <div class="song-row">
         <div class="song-avatar" style="background:var(--card-shows);">${index+1}</div>
+
         <div class="song-meta-info">
-          <div class="song-row-title">${song.title}</div>
-          <div class="song-row-sub">${song.key} • ${song.genre.toUpperCase()}</div>
+            <div class="song-row-title">${song.title}</div>
+            <div class="song-row-sub">${song.key} • ${song.genre.toUpperCase()}</div>
         </div>
-      </div>
-  `).join("");
+
+    </div>
+`).join("");
 
   const fontVal = document.getElementById("prepare-font-size-value");
   if (fontVal) fontVal.innerText = `${currentFontSize}px`;
