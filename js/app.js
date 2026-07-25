@@ -655,7 +655,8 @@ window.renderRepertoires = function () {
 
     target.innerHTML = repertoiresArray.map(rep => `
 
-        <div class="song-row">
+        <div class="song-row"
+     onclick="openRepertoire('${rep.id}')">
 
             <div class="song-avatar"
                  style="background:var(--card-shows);">
