@@ -100,9 +100,15 @@ window.showScreen = function(screenId) {
   const headerTitle = document.getElementById('main-header-title');
 
   if (screenId === 'screen-main-menu') {
+     
     if (backBtn) backBtn.style.display = 'none';
     if (addBtn) addBtn.style.display = 'none';
     if (headerTitle) headerTitle.innerText = "Cancionero";
+     
+     const subtitle =
+document.getElementById("main-header-subtitle");
+if(subtitle) subtitle.innerText = "";
+
   } else {
     if (backBtn) backBtn.style.display = 'block';
     if (screenId === 'screen-cancionero-list') {
