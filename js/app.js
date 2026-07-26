@@ -707,6 +707,58 @@ window.openRepertoire = function(id){
     document.getElementById("repertoire-detail-title").innerText =
         "📁 " + rep.nombre;
 
+    const target = document.getElementById("repertoire-detail-list");
+
+    const songs = rep.canciones
+        .map(songId => songsArray.find(s => s.id === songId))
+        .filter(song => song);
+
+    if(songs.length === 0){
+
+        target.innerHTML = `
+            <div class="empty-peña">
+
+                Este repertorio todavía no tiene canciones.
+
+            </div>
+        `;
+
+    }else{
+
+        target.innerHTML = songs.map((song,index)=>`
+
+            <div class="song-row"
+                 onclick="quickViewSong('${song.id}')">
+
+                <div class="song-avatar"
+                     style="background:var(--card-shows);">
+
+                     ${index+1}
+
+                </div>
+
+                <div class="song-meta-info">
+
+                    <div class="song-row-title">
+
+                        ${song.title}
+
+                    </div>
+
+                    <div class="song-row-sub">
+
+                        ${song.genre.toUpperCase()} • ${song.key}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        `).join("");
+
+    }
+
     navigateTo("screen-repertoire-detail");
 
 }
