@@ -111,18 +111,44 @@ if(subtitle) subtitle.innerText = "";
 
   } else {
     if (backBtn) backBtn.style.display = 'block';
+
     if (screenId === 'screen-cancionero-list') {
+
       if (addBtn) addBtn.style.display = 'block';
       if (headerTitle) headerTitle.innerText = "Cancionero";
+
+      const subtitle = document.getElementById("main-header-subtitle");
+      if (subtitle) subtitle.innerText = "";
+
     } else if (screenId === 'screen-add-song') {
+
       if (addBtn) addBtn.style.display = 'none';
       if (headerTitle) headerTitle.innerText = "Nueva Canción";
+
+      const subtitle = document.getElementById("main-header-subtitle");
+      if (subtitle) subtitle.innerText = "";
+
     } else if (screenId === 'screen-shows-repertoire') {
+
       if (addBtn) addBtn.style.display = 'none';
-      if (headerTitle) headerTitle.innerText = "Shows en Vivo";
+      if (headerTitle) headerTitle.innerText = "Repertorios";
+
+      const subtitle = document.getElementById("main-header-subtitle");
+      if (subtitle) subtitle.innerText = "";
+
+    } else if (screenId === 'screen-repertoire-detail') {
+
+      if (addBtn) addBtn.style.display = 'none';
+      // El título y el subtítulo los actualiza openRepertoire()
+
     } else if (screenId === 'screen-live-preview') {
+
       if (addBtn) addBtn.style.display = 'none';
       if (headerTitle) headerTitle.innerText = "Modo Ensayo";
+
+      const subtitle = document.getElementById("main-header-subtitle");
+      if (subtitle) subtitle.innerText = "";
+
     }
   }
 }
