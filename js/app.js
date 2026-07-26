@@ -704,10 +704,24 @@ window.openRepertoire = function(id){
     currentRepertoireId = id;
     currentRepertoire = rep;
 
-    const headerTitle = document.getElementById("main-header-title");
+   const headerTitle = document.getElementById("main-header-title");
+
+const subtitle =
+document.getElementById("main-header-subtitle");
 
 if(headerTitle){
     headerTitle.innerText = "📁 " + rep.nombre;
+}
+
+if(subtitle){
+
+    const cantidad = rep.canciones.length;
+
+    subtitle.innerText =
+        cantidad === 1
+        ? "1 canción"
+        : `${cantidad} canciones`;
+
 }
 
     const target = document.getElementById("repertoire-detail-list");
