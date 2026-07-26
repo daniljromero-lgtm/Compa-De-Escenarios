@@ -763,6 +763,29 @@ window.openRepertoire = function(id){
 
 }
 
+window.startRepertoireShow = async function(){
+
+    if(!currentRepertoire){
+
+        showToast("No hay un repertorio abierto.");
+
+        return;
+
+    }
+
+    showSetlistIds = [...currentRepertoire.canciones];
+
+    currentLiveIndex = 0;
+
+    document.getElementById("live-player-mode")
+        .classList.add("active");
+
+    await enterFullscreen();
+
+    loadLiveSong();
+
+}
+
 window.deleteRepertoire = function(id){
 
     if(!confirm("¿Eliminar este repertorio?")) return;
