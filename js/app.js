@@ -704,8 +704,11 @@ window.openRepertoire = function(id){
     currentRepertoireId = id;
     currentRepertoire = rep;
 
-    document.getElementById("repertoire-detail-title").innerText =
-        "📁 " + rep.nombre;
+    const headerTitle = document.getElementById("main-header-title");
+
+if(headerTitle){
+    headerTitle.innerText = "📁 " + rep.nombre;
+}
 
     const target = document.getElementById("repertoire-detail-list");
 
