@@ -531,11 +531,19 @@ window.exitLiveShow = async function() {
 
     await exitFullscreen();
 
-    // Volver a mostrar la vista previa
+    if(liveOrigin === "preview"){
+
     const preview = document.getElementById("screen-live-preview");
-    if (preview) {
+
+    if(preview){
         preview.classList.add("active");
     }
+
+   }else{
+
+    navigateBack();
+
+  }
 
 }
 
