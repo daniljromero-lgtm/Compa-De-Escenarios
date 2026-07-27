@@ -352,10 +352,12 @@ window.renderSongs = function() {
 
         </button>
 
-    </div>
+        </div>
 
 </div>
-    `;
+
+</div>
+`;
   }).join('');
 }
 
