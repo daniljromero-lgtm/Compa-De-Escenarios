@@ -540,3 +540,85 @@ html, body {
     color:var(--text-soft);
 
 }
+
+/*==========================================================
+  MENÚ CONTEXTUAL DE CANCIONES
+==========================================================*/
+
+.song-actions{
+    position:relative;
+    margin-left:auto;
+}
+
+.song-menu-btn{
+    width:42px;
+    height:42px;
+    border:none;
+    border-radius:50%;
+    background:transparent;
+    color:var(--text-dorado);
+    font-size:24px;
+    cursor:pointer;
+}
+
+.song-menu-btn:hover{
+    background:rgba(255,255,255,.08);
+}
+
+.song-menu{
+
+    position:absolute;
+
+    top:48px;
+
+    right:0;
+
+    min-width:220px;
+
+    background:var(--card-bg);
+
+    border:1px solid rgba(255,255,255,.12);
+
+    border-radius:14px;
+
+    overflow:hidden;
+
+    display:none;
+
+    z-index:9999;
+
+    box-shadow:0 12px 35px rgba(0,0,0,.45);
+
+}
+
+.song-menu.active{
+
+    display:block;
+
+}
+
+.song-menu button{
+
+    width:100%;
+
+    padding:14px 18px;
+
+    background:none;
+
+    border:none;
+
+    color:white;
+
+    text-align:left;
+
+    font-size:15px;
+
+    cursor:pointer;
+
+}
+
+.song-menu button:hover{
+
+    background:rgba(255,255,255,.08);
+
+}
