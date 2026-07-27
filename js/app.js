@@ -1040,6 +1040,42 @@ window.showToast = function(msg) {
 }
 
 /* ==========================================================
+   MENÚ CONTEXTUAL DE CANCIONES
+========================================================== */
+
+window.toggleSongMenu = function(songId){
+
+    // Cerrar cualquier otro menú abierto
+    document.querySelectorAll(".song-menu.active").forEach(menu=>{
+        if(menu.id !== `song-menu-${songId}`){
+            menu.classList.remove("active");
+        }
+    });
+
+    const menu = document.getElementById(`song-menu-${songId}`);
+
+    if(menu){
+        menu.classList.toggle("active");
+    }
+
+}
+
+// Cerrar el menú al tocar fuera de él
+document.addEventListener("click", function(e){
+
+    if(
+        !e.target.closest(".song-actions")
+    ){
+
+        document.querySelectorAll(".song-menu.active").forEach(menu=>{
+            menu.classList.remove("active");
+        });
+
+    }
+
+});
+
+/* ==========================================================
    EVENTOS DEL REPRODUCTOR EN VIVO
 ========================================================== */
 // Event Listeners para scroll táctil / mouse en Vivo
