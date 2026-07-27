@@ -825,6 +825,8 @@ window.startRepertoireShow = async function(){
         return;
 
     }
+   
+    liveOrigin = "repertoire";
 
     showSetlistIds = [...currentRepertoire.canciones];
 
