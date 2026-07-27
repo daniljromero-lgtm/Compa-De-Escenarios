@@ -317,17 +317,44 @@ window.renderSongs = function() {
           <div class="song-row-title">${song.title}</div>
           <div class="song-row-sub">${song.key} • ${song.bpm} BPM</div>
         </div>
-        <div class="action-icons-wrap">
-          <button class="add-to-show-btn"
-        onclick="openRepertoireModal('${song.id}')">
+        <div class="song-actions">
 
-    📁 Repertorio
+    <button
+        class="song-menu-btn"
+        onclick="toggleSongMenu('${song.id}')">
 
-</button>
-          <button class="delete-btn" style="color:#4da3ff" onclick="editSong('${song.id}')">✏️</button>
-          <button class="delete-btn" onclick="deleteSong('${song.id}')">🗑️</button>
-        </div>
-      </div>
+        ⋮
+
+    </button>
+
+    <div
+        class="song-menu"
+        id="song-menu-${song.id}">
+
+        <button
+            onclick="toggleSongInSetlist('${song.id}')">
+
+            📁 ${isAdded ? 'Quitar del repertorio' : 'Agregar al repertorio'}
+
+        </button>
+
+        <button
+            onclick="editSong('${song.id}')">
+
+            ✏️ Editar
+
+        </button>
+
+        <button
+            onclick="deleteSong('${song.id}')">
+
+            🗑️ Eliminar
+
+        </button>
+
+    </div>
+
+</div>
     `;
   }).join('');
 }
