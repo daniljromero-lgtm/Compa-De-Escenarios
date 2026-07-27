@@ -332,7 +332,7 @@ window.renderSongs = function() {
         id="song-menu-${song.id}">
 
         <button
-            onclick="toggleSongInSetlist('${song.id}')">
+            onclick="openRepertoireModal('${song.id}')">
 
             📁 ${isAdded ? 'Quitar del repertorio' : 'Agregar al repertorio'}
 
