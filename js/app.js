@@ -80,6 +80,7 @@ let editingSongData = null;
 
 // Control de Vivo / Ensayo
 let currentLiveIndex = 0;
+let liveOrigin = "preview";
 let isAutoscrolling = false;
 let autoscrollInterval = null;
 let scrollSpeed = 22; 
