@@ -460,7 +460,10 @@ window.goToStageMode = async function() {
     }
 
     // Preparar el show
+    liveOrigin = "preview";
+
     showSetlistIds = [currentSong.id];
+
     currentLiveIndex = 0;
 
     // Mostrar el reproductor
