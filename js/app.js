@@ -768,7 +768,14 @@ window.renderRepertoires = function () {
                 </button>
 
                 <button
-                    onclick="event.stopPropagation(); deleteRepertoire('${rep.id}')">
+                    onclick="event.stopPropagation(); duplicateRepertoire('${rep.id}')">
+
+                    📑 Duplicar
+
+                </button>
+
+                <button
+                      onclick="event.stopPropagation(); deleteRepertoire('${rep.id}')">
 
                     🗑️ Eliminar
 
@@ -953,6 +960,52 @@ window.renameRepertoire = function(id){
             showToast(
                 "Error: " + err.message
             );
+
+        });
+
+}
+
+window.duplicateRepertoire = function(id){
+
+    const rep = repertoiresArray.find(r => r.id === id);
+
+    if(!rep){
+        showToast("No se encontró el repertorio.");
+        return;
+    }
+
+    let nuevoNombre = rep.nombre + " (copia)";
+
+    let contador = 2;
+
+    while(
+        repertoiresArray.some(r => r.nombre === nuevoNombre)
+    ){
+
+        nuevoNombre = `${rep.nombre} (copia ${contador})`;
+
+        contador++;
+
+    }
+
+    db.collection("Repertorios")
+        .add({
+
+            nombre: nuevoNombre,
+
+            canciones: [...rep.canciones]
+
+        })
+
+        .then(()=>{
+
+            showToast("Repertorio duplicado");
+
+        })
+
+        .catch(err=>{
+
+            showToast("Error: " + err.message);
 
         });
 
