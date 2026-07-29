@@ -570,9 +570,13 @@ window.exitLiveShow = async function() {
 
    }else{
 
-    navigateBack();
+    document
+        .getElementById("live-player-mode")
+        .classList.remove("active");
 
-  }
+    openRepertoire(currentRepertoireId);
+
+   }
 
 }
 
@@ -900,17 +904,22 @@ if(subtitle){
 
 window.startRepertoireShow = async function(){
 
-    if(!currentRepertoire){
+    const repertorioActual =
+        repertoiresArray.find(r => r.id === currentRepertoireId);
+
+    if(!repertorioActual){
 
         showToast("No hay un repertorio abierto.");
 
         return;
 
     }
-   
+
+    currentRepertoire = repertorioActual;
+
     liveOrigin = "repertoire";
 
-    showSetlistIds = [...currentRepertoire.canciones];
+    showSetlistIds = [...repertorioActual.canciones];
 
     currentLiveIndex = 0;
 
