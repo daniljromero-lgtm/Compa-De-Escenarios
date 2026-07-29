@@ -848,8 +848,14 @@ if(subtitle){
 
         target.innerHTML = songs.map((song,index)=>`
 
-            <div class="song-row"
-     onclick="quickViewSong('${song.id}')">
+            <div class="song-row repertoire-song"
+     draggable="true"
+     data-index="${index}"
+     onclick="quickViewSong('${song.id}')"
+     ondragstart="dragStart(event)"
+     ondragover="dragOver(event)"
+     ondrop="dropSong(event)"
+     ondragend="dragEnd()">
 
     <div class="song-avatar"
          style="background:var(--card-shows);">
