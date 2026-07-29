@@ -716,9 +716,7 @@ window.renderRepertoires = function () {
 
         target.innerHTML = `
             <div class="empty-peña">
-
                 Todavía no hay repertorios.
-
             </div>
         `;
 
@@ -733,34 +731,52 @@ window.renderRepertoires = function () {
 
         <div class="song-avatar"
              style="background:var(--card-shows);">
-
              📁
-
         </div>
 
         <div class="song-meta-info">
 
             <div class="song-row-title">
-
                 ${rep.nombre}
-
             </div>
 
             <div class="song-row-sub">
-
                 ${rep.canciones.length} canciones
-
             </div>
 
         </div>
 
-        <button
-            class="delete-btn"
-            onclick="event.stopPropagation(); deleteRepertoire('${rep.id}')">
+        <div class="song-actions">
 
-            🗑️
+            <button
+                class="song-menu-btn"
+                onclick="event.stopPropagation(); toggleRepertoireMenu('${rep.id}')">
 
-        </button>
+                ⋮
+
+            </button>
+
+            <div
+                class="song-menu"
+                id="repertoire-menu-${rep.id}">
+
+                <button
+                    onclick="event.stopPropagation(); renameRepertoire('${rep.id}')">
+
+                    ✏️ Renombrar
+
+                </button>
+
+                <button
+                    onclick="event.stopPropagation(); deleteRepertoire('${rep.id}')">
+
+                    🗑️ Eliminar
+
+                </button>
+
+            </div>
+
+        </div>
 
     </div>
 
@@ -891,6 +907,52 @@ window.deleteRepertoire = function(id){
         .then(()=>{
 
             showToast("Repertorio eliminado");
+
+        });
+
+}
+
+window.renameRepertoire = function(id){
+
+    const rep =
+        repertoiresArray.find(r => r.id === id);
+
+    if(!rep) return;
+
+    const nuevoNombre =
+        prompt(
+            "Nuevo nombre del repertorio",
+            rep.nombre
+        );
+
+    if(
+        !nuevoNombre ||
+        nuevoNombre.trim() === ""
+    ){
+        return;
+    }
+
+    db.collection("Repertorios")
+        .doc(id)
+        .update({
+
+            nombre: nuevoNombre.trim()
+
+        })
+
+        .then(() => {
+
+            showToast(
+                "Repertorio renombrado"
+            );
+
+        })
+
+        .catch(err => {
+
+            showToast(
+                "Error: " + err.message
+            );
 
         });
 
@@ -1055,6 +1117,29 @@ window.toggleSongMenu = function(songId){
     });
 
     const menu = document.getElementById(`song-menu-${songId}`);
+
+    if(menu){
+        menu.classList.toggle("active");
+    }
+
+}
+
+window.toggleRepertoireMenu = function(repertoireId){
+
+    document
+        .querySelectorAll(".song-menu.active")
+        .forEach(menu => {
+
+            if(menu.id !== `repertoire-menu-${repertoireId}`){
+                menu.classList.remove("active");
+            }
+
+        });
+
+    const menu =
+        document.getElementById(
+            `repertoire-menu-${repertoireId}`
+        );
 
     if(menu){
         menu.classList.toggle("active");
