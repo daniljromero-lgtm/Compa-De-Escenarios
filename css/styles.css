@@ -626,3 +626,25 @@ html, body {
     background:rgba(255,255,255,.08);
 
 }
+
+.repertoire-song{
+
+    cursor: grab;
+
+    transition:.2s;
+
+}
+
+.repertoire-song.dragging{
+
+    opacity:.4;
+
+    transform:scale(.98);
+
+}
+
+.repertoire-song:active{
+
+    cursor:grabbing;
+
+}
