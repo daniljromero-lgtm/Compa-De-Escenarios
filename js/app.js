@@ -1097,6 +1097,74 @@ window.moveSongInRepertoire = function(direction,index){
 
 }
 
+let draggedSongIndex = null;
+
+window.dragStart = function(e){
+
+    draggedSongIndex = Number(
+        e.currentTarget.dataset.index
+    );
+
+    e.currentTarget.classList.add("dragging");
+
+}
+
+window.dragOver = function(e){
+
+    e.preventDefault();
+
+}
+
+window.dragEnd = function(){
+
+    document
+        .querySelectorAll(".dragging")
+        .forEach(el=>el.classList.remove("dragging"));
+
+}
+
+window.dropSong = function(e){
+
+    e.preventDefault();
+
+    const destino = Number(
+        e.currentTarget.dataset.index
+    );
+
+    if(
+        destino === draggedSongIndex ||
+        draggedSongIndex===null
+    ){
+        return;
+    }
+
+    const canciones =
+        [...currentRepertoire.canciones];
+
+    const movida =
+        canciones.splice(draggedSongIndex,1)[0];
+
+    canciones.splice(destino,0,movida);
+
+    db.collection("Repertorios")
+        .doc(currentRepertoire.id)
+        .update({
+
+            canciones
+
+        })
+
+        .then(()=>{
+
+            currentRepertoire.canciones =
+                canciones;
+
+            openRepertoire(currentRepertoire.id);
+
+        });
+
+}
+
 /* ==========================================================
    MODAL REPERTORIOS
 ========================================================== */
