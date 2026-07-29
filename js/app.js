@@ -841,32 +841,54 @@ if(subtitle){
         target.innerHTML = songs.map((song,index)=>`
 
             <div class="song-row"
-                 onclick="quickViewSong('${song.id}')">
+     onclick="quickViewSong('${song.id}')">
 
-                <div class="song-avatar"
-                     style="background:var(--card-shows);">
+    <div class="song-avatar"
+         style="background:var(--card-shows);">
 
-                     ${index+1}
+         ${index+1}
 
-                </div>
+    </div>
 
-                <div class="song-meta-info">
+    <div class="song-meta-info">
 
-                    <div class="song-row-title">
+        <div class="song-row-title">
 
-                        ${song.title}
+            ${song.title}
 
-                    </div>
+        </div>
 
-                    <div class="song-row-sub">
+        <div class="song-row-sub">
 
-                        ${song.genre.toUpperCase()} • ${song.key}
+            ${song.genre.toUpperCase()} • ${song.key}
 
-                    </div>
+        </div>
 
-                </div>
+    </div>
 
-            </div>
+    <div
+        class="song-actions"
+        onclick="event.stopPropagation();">
+
+        <button
+            class="song-menu-btn"
+            onclick="moveSongInRepertoire(-1, ${index})">
+
+            ⬆
+
+        </button>
+
+        <button
+            class="song-menu-btn"
+            onclick="moveSongInRepertoire(1, ${index})">
+
+            ⬇
+
+        </button>
+
+    </div>
+
+</div>
 
         `).join("");
 
@@ -1006,6 +1028,51 @@ window.duplicateRepertoire = function(id){
         .catch(err=>{
 
             showToast("Error: " + err.message);
+
+        });
+
+}
+
+window.moveSongInRepertoire = function(direction,index){
+
+    if(!currentRepertoire) return;
+
+    const canciones = [...currentRepertoire.canciones];
+
+    const nuevoIndice = index + direction;
+
+    if(
+        nuevoIndice < 0 ||
+        nuevoIndice >= canciones.length
+    ){
+        return;
+    }
+
+    const temporal = canciones[index];
+
+    canciones[index] = canciones[nuevoIndice];
+
+    canciones[nuevoIndice] = temporal;
+
+    db.collection("Repertorios")
+        .doc(currentRepertoire.id)
+        .update({
+
+            canciones: canciones
+
+        })
+
+        .then(()=>{
+
+            currentRepertoire.canciones = canciones;
+
+            openRepertoire(currentRepertoire.id);
+
+        })
+
+        .catch(err=>{
+
+            showToast(err.message);
 
         });
 
