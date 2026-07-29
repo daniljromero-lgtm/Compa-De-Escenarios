@@ -510,7 +510,9 @@ window.goToStageMode = async function() {
    MODO ESCENARIO (SHOW EN VIVO)
 ========================================================== */
 window.loadLiveSong = function() {
-  const selectedSongs = songsArray.filter(s => showSetlistIds.includes(s.id));
+  const selectedSongs = showSetlistIds
+    .map(id => songsArray.find(s => s.id === id))
+    .filter(song => song);
   const song = selectedSongs[currentLiveIndex];
   if (!song) return;
 
@@ -538,7 +540,9 @@ window.loadLiveSong = function() {
 }
 
 window.changeLiveSong = function(direction) {
-  const selectedSongs = songsArray.filter(s => showSetlistIds.includes(s.id));
+  const selectedSongs = showSetlistIds
+    .map(id => songsArray.find(s => s.id === id))
+    .filter(song => song);
   const nextIndex = currentLiveIndex + direction;
   if (nextIndex >= 0 && nextIndex < selectedSongs.length) {
     currentLiveIndex = nextIndex;
