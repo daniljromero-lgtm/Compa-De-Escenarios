@@ -1089,7 +1089,22 @@ window.moveSongInRepertoire = function(direction,index){
 
 }
 
+/* ==========================================================
+   DRAG & DROP DE CANCIONES EN REPERTORIOS
+   Compatible con computadora y celular
+   ========================================================== */
+
 let draggedSongIndex = null;
+let touchDraggedIndex = null;
+let touchDragging = false;
+let touchStartX = 0;
+let touchStartY = 0;
+
+
+/* ----------------------------------------------------------
+   DRAG & DROP TRADICIONAL
+   Computadora / navegador compatible
+   ---------------------------------------------------------- */
 
 window.dragStart = function(e){
 
@@ -1099,21 +1114,26 @@ window.dragStart = function(e){
 
     e.currentTarget.classList.add("dragging");
 
-}
+};
+
 
 window.dragOver = function(e){
 
     e.preventDefault();
 
-}
+};
+
 
 window.dragEnd = function(){
 
     document
         .querySelectorAll(".dragging")
-        .forEach(el=>el.classList.remove("dragging"));
+        .forEach(el => {
+            el.classList.remove("dragging");
+        });
 
-}
+};
+
 
 window.dropSong = function(e){
 
@@ -1124,9 +1144,10 @@ window.dropSong = function(e){
     );
 
     if(
-        destino === draggedSongIndex ||
-        draggedSongIndex===null
+        draggedSongIndex === null ||
+        destino === draggedSongIndex
     ){
+        draggedSongIndex = null;
         return;
     }
 
@@ -1134,28 +1155,331 @@ window.dropSong = function(e){
         [...currentRepertoire.canciones];
 
     const movida =
-        canciones.splice(draggedSongIndex,1)[0];
+        canciones.splice(
+            draggedSongIndex,
+            1
+        )[0];
 
-    canciones.splice(destino,0,movida);
+    canciones.splice(
+        destino,
+        0,
+        movida
+    );
 
     db.collection("Repertorios")
         .doc(currentRepertoire.id)
         .update({
-
-            canciones
-
+            canciones: canciones
         })
-
-        .then(()=>{
+        .then(() => {
 
             currentRepertoire.canciones =
                 canciones;
 
-            openRepertoire(currentRepertoire.id);
+            draggedSongIndex = null;
+
+            openRepertoire(
+                currentRepertoire.id
+            );
+
+            showToast(
+                "Orden actualizado"
+            );
+
+        })
+        .catch(err => {
+
+            draggedSongIndex = null;
+
+            showToast(
+                "Error: " + err.message
+            );
 
         });
 
-}
+};
+
+
+/* ----------------------------------------------------------
+   ARRASTRE TÁCTIL
+   Android / celular
+   ---------------------------------------------------------- */
+
+window.touchDragStart = function(e){
+
+    if(!e.touches || !e.touches[0]){
+        return;
+    }
+
+    const touch = e.touches[0];
+
+    touchDraggedIndex =
+        Number(
+            e.currentTarget.dataset.index
+        );
+
+    touchStartX = touch.clientX;
+    touchStartY = touch.clientY;
+
+    touchDragging = false;
+
+};
+
+
+window.touchDragMove = function(e){
+
+    if(
+        touchDraggedIndex === null ||
+        !e.touches ||
+        !e.touches[0]
+    ){
+        return;
+    }
+
+    const touch = e.touches[0];
+
+    const distanciaX =
+        Math.abs(
+            touch.clientX - touchStartX
+        );
+
+    const distanciaY =
+        Math.abs(
+            touch.clientY - touchStartY
+        );
+
+    /*
+       Evitamos activar el arrastre
+       por un pequeño movimiento accidental.
+    */
+
+    if(
+        !touchDragging &&
+        distanciaX < 8 &&
+        distanciaY < 8
+    ){
+        return;
+    }
+
+    touchDragging = true;
+
+    e.preventDefault();
+
+    const elemento =
+        document.elementFromPoint(
+            touch.clientX,
+            touch.clientY
+        );
+
+    if(!elemento){
+        return;
+    }
+
+    const fila =
+        elemento.closest(
+            ".repertoire-song"
+        );
+
+    if(!fila){
+        return;
+    }
+
+    const destino =
+        Number(
+            fila.dataset.index
+        );
+
+    if(
+        destino === touchDraggedIndex
+    ){
+        return;
+    }
+
+    const lista =
+        document.getElementById(
+            "repertoire-detail-list"
+        );
+
+    if(!lista){
+        return;
+    }
+
+    const filas =
+        [...lista.querySelectorAll(
+            ".repertoire-song"
+        )];
+
+    const filaArrastrada =
+        filas[touchDraggedIndex];
+
+    if(!filaArrastrada){
+        return;
+    }
+
+    const rect =
+        fila.getBoundingClientRect();
+
+    const mitad =
+        rect.top +
+        (rect.height / 2);
+
+    if(
+        touch.clientY < mitad
+    ){
+
+        lista.insertBefore(
+            filaArrastrada,
+            fila
+        );
+
+    }else{
+
+        lista.insertBefore(
+            filaArrastrada,
+            fila.nextSibling
+        );
+
+    }
+
+    /*
+       Recalculamos los índices visuales.
+    */
+
+    const nuevasFilas =
+        [...lista.querySelectorAll(
+            ".repertoire-song"
+        )];
+
+    nuevasFilas.forEach(
+        (item, index) => {
+
+            item.dataset.index = index;
+
+        }
+    );
+
+    touchDraggedIndex =
+        Number(
+            filaArrastrada.dataset.index
+        );
+
+    document
+        .querySelectorAll(
+            ".repertoire-song"
+        )
+        .forEach(item => {
+
+            item.classList.remove(
+                "dragging"
+            );
+
+        });
+
+    filaArrastrada.classList.add(
+        "dragging"
+    );
+
+};
+
+
+window.touchDragEnd = function(e){
+
+    if(
+        touchDraggedIndex === null
+    ){
+        return;
+    }
+
+    /*
+       Si apenas tocamos el handle
+       y no arrastramos, dejamos que
+       la interacción normal continúe.
+    */
+
+    if(!touchDragging){
+
+        touchDraggedIndex = null;
+
+        return;
+
+    }
+
+    if(e){
+
+        e.preventDefault();
+        e.stopPropagation();
+
+    }
+
+    const lista =
+        document.getElementById(
+            "repertoire-detail-list"
+        );
+
+    if(!lista){
+        touchDraggedIndex = null;
+        touchDragging = false;
+        return;
+    }
+
+    const filas =
+        [...lista.querySelectorAll(
+            ".repertoire-song"
+        )];
+
+    const nuevoOrden =
+        filas.map(
+            fila => {
+
+                const indice =
+                    Number(
+                        fila.dataset.index
+                    );
+
+                return currentRepertoire
+                    .canciones[indice];
+
+            }
+        );
+
+    db.collection("Repertorios")
+        .doc(currentRepertoire.id)
+        .update({
+            canciones: nuevoOrden
+        })
+        .then(() => {
+
+            currentRepertoire.canciones =
+                nuevoOrden;
+
+            touchDraggedIndex = null;
+            touchDragging = false;
+
+            openRepertoire(
+                currentRepertoire.id
+            );
+
+            showToast(
+                "Orden actualizado"
+            );
+
+        })
+        .catch(err => {
+
+            touchDraggedIndex = null;
+            touchDragging = false;
+
+            openRepertoire(
+                currentRepertoire.id
+            );
+
+            showToast(
+                "Error: " + err.message
+            );
+
+        });
+
+};
 
 /* ==========================================================
    MODAL REPERTORIOS
