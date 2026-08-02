@@ -648,3 +648,37 @@ html, body {
     cursor:grabbing;
 
 }
+
+.drag-handle{
+
+    cursor:grab;
+
+    font-size:24px;
+
+    color:var(--text-secondary);
+
+    padding:8px 12px;
+
+    user-select:none;
+
+    touch-action:none;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+}
+
+.drag-handle:active{
+
+    cursor:grabbing;
+
+}
+
+.dragging{
+
+    opacity:.45;
+
+}
