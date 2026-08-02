@@ -848,14 +848,9 @@ if(subtitle){
 
         target.innerHTML = songs.map((song,index)=>`
 
-            <div class="song-row repertoire-song"
-     draggable="true"
+    <div class="song-row repertoire-song"
      data-index="${index}"
-     onclick="quickViewSong('${song.id}')"
-     ondragstart="dragStart(event)"
-     ondragover="dragOver(event)"
-     ondrop="dropSong(event)"
-     ondragend="dragEnd()">
+     onclick="quickViewSong('${song.id}')">
 
     <div class="song-avatar"
          style="background:var(--card-shows);">
@@ -881,24 +876,21 @@ if(subtitle){
     </div>
 
     <div
-        class="song-actions"
-        onclick="event.stopPropagation();">
+    class="song-actions"
+    onclick="event.stopPropagation();">
 
-        <button
-            class="song-menu-btn"
-            onclick="moveSongInRepertoire(-1, ${index})">
+    <span
+        class="drag-handle"
+        draggable="true"
+        data-index="${index}"
+        ondragstart="dragStart(event)"
+        ondragover="dragOver(event)"
+        ondrop="dropSong(event)"
+        ondragend="dragEnd()">
 
-            ⬆
+        ☰
 
-        </button>
-
-        <button
-            class="song-menu-btn"
-            onclick="moveSongInRepertoire(1, ${index})">
-
-            ⬇
-
-        </button>
+    </span>
 
     </div>
 
