@@ -627,6 +627,24 @@ html, body {
 
 }
 
+/* ==========================================================
+   SCROLL DEL DETALLE DEL REPERTORIO
+   ========================================================== */
+
+#screen-repertoire-detail {
+    min-height: 0;
+}
+
+#repertoire-detail-list {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    padding: 16px;
+    padding-bottom: 8px;
+}
+
 .repertoire-song{
 
     cursor: grab;
