@@ -886,10 +886,7 @@ if(subtitle){
     ondragstart="dragStart(event)"
     ondragover="dragOver(event)"
     ondrop="dropSong(event)"
-    ondragend="dragEnd()"
-    ontouchstart="touchDragStart(event)"
-    ontouchmove="touchDragMove(event)"
-    ontouchend="touchDragEnd(event)">
+    ondragend="dragEnd()">
 
     ☰
 
