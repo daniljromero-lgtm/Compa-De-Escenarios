@@ -880,15 +880,18 @@ if(subtitle){
     onclick="event.stopPropagation();">
 
     <span
-        class="drag-handle"
-        draggable="true"
-        data-index="${index}"
-        ondragstart="dragStart(event)"
-        ondragover="dragOver(event)"
-        ondrop="dropSong(event)"
-        ondragend="dragEnd()">
+    class="drag-handle"
+    draggable="true"
+    data-index="${index}"
+    ondragstart="dragStart(event)"
+    ondragover="dragOver(event)"
+    ondrop="dropSong(event)"
+    ondragend="dragEnd()"
+    ontouchstart="touchDragStart(event)"
+    ontouchmove="touchDragMove(event)"
+    ontouchend="touchDragEnd(event)">
 
-        ☰
+    ☰
 
     </span>
 
